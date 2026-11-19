@@ -6,37 +6,28 @@ const SITE_DATA_KEY = 'joselo_site_data';
 
 const DEFAULT_DATA = {
   artworks: [
-    { id: 1,  title: 'El Hombre Ante el Tercer Milenio', technique: 'Digital sobre carbón y papel',      medium: 'Digital / Técnica Mixta',   size: '100 × 80 cm',  price: '$3,200 USD',         status: 'available', category: 'digital',     image: 'placeholder' },
-    { id: 2,  title: 'La Dama de Luz',                   technique: 'Óleo sobre lienzo',                  medium: 'Óleo sobre Lienzo',          size: '120 × 90 cm',  price: '$4,500 USD',         status: 'available', category: 'painting',    image: 'placeholder' },
-    { id: 3,  title: 'Labios en la Noche',               technique: 'Acrílico y técnica mixta',           medium: 'Acrílico / Técnica Mixta',   size: '90 × 70 cm',   price: '$2,800 USD',         status: 'available', category: 'mixed-media', image: 'placeholder' },
-    { id: 4,  title: 'Dolor de un Tibetano',             technique: 'Carbón y pastel sobre papel',        medium: 'Carbón sobre Papel',         size: '70 × 50 cm',   price: '$1,900 USD',         status: 'available', category: 'drawing',     image: 'placeholder' },
-    { id: 5,  title: 'La Esperanza del Tibet',           technique: 'Óleo y técnica mixta',               medium: 'Óleo / Técnica Mixta',       size: '150 × 110 cm', price: 'CONSULTAR PRECIO',   status: 'inquire',   category: 'painting',    image: 'placeholder' },
-    { id: 6,  title: 'Free the Tibet',                   technique: 'Tinta y grafito sobre papel',        medium: 'Tinta sobre Papel',          size: '60 × 45 cm',   price: '$2,200 USD',         status: 'available', category: 'drawing',     image: 'placeholder' },
-    { id: 7,  title: 'Color In Life',                    technique: 'Acrílico sobre lienzo',              medium: 'Acrílico sobre Lienzo',      size: '100 × 80 cm',  price: '$3,800 USD',         status: 'available', category: 'painting',    image: 'placeholder' },
-    { id: 8,  title: 'El Hombre Surgiendo en Sí Mismo',  technique: 'Técnica mixta digital',              medium: 'Arte Digital',               size: '80 × 60 cm',   price: '$2,600 USD',         status: 'available', category: 'digital',     image: 'placeholder' },
-    { id: 9,  title: 'Mujer',                            technique: 'Óleo sobre lienzo',                  medium: 'Óleo sobre Lienzo',          size: '110 × 85 cm',  price: 'VENDIDA',            status: 'sold',      category: 'painting',    image: 'placeholder' },
-    { id: 10, title: 'Nude Abstract (Sin Título)',       technique: 'Carbón y acrílico',                  medium: 'Carbón / Acrílico',          size: '90 × 70 cm',   price: '$3,100 USD',         status: 'available', category: 'mixed-media', image: 'placeholder' }
+    { id: 1, title: 'Sin Título I',   technique: 'Óleo sobre lienzo',       medium: 'Óleo sobre Lienzo',      size: '100 × 80 cm',       price: '$1,000 USD',        status: 'available', category: 'painting',    image: 'placeholder' },
+    { id: 2, title: 'Sin Título II',  technique: 'Acrílico sobre lienzo',   medium: 'Acrílico sobre Lienzo',  size: '90 × 70 cm',        price: '$1,200 USD',        status: 'available', category: 'painting',    image: 'placeholder' },
+    { id: 3, title: 'Sin Título III', technique: 'Carbón sobre papel',      medium: 'Carbón sobre Papel',     size: '60 × 50 cm',        price: '$800 USD',          status: 'available', category: 'drawing',     image: 'placeholder' },
+    { id: 4, title: 'Sin Título IV',  technique: 'Mixta sobre madera',      medium: 'Técnica Mixta',          size: '120 × 90 cm',       price: 'CONSULTAR PRECIO',  status: 'inquire',   category: 'mixed-media', image: 'placeholder' },
+    { id: 5, title: 'Sin Título V',   technique: 'Bronce',                  medium: 'Escultura en Bronce',    size: '40 × 30 × 20 cm',   price: '$2,500 USD',        status: 'available', category: 'sculpture',   image: 'placeholder' }
   ],
   bio: {
-    paragraph1: 'Joselo Thomassiny es un artista plástico mexicano y gestor cultural radicado en Cancún. Su práctica creativa abarca pintura, dibujo, medios digitales y técnicas mixtas — siempre anclada en la creencia de que el arte puede despertar conciencias y unir comunidades.',
-    paragraph2: 'Desde exposiciones poderosas como «A través de la noche» y «Kahlo-Maya-Pok-Ta-Pok» hasta su presencia en la Galería Balance de Cancún, la obra de Thomassiny invita a una reflexión profunda a través del color, la forma y el simbolismo.',
-    statement: 'El arte no es solo lo que se ve — es lo que transforma al que mira.',
+    name: 'Nombre del Artista',
+    paragraph1: 'Artista visual con más de 20 años de trayectoria.',
+    paragraph2: '',
+    statement: '',
     portraitImage: null,
-    stats: { works: 17, exhibitions: 10, collections: 5 }
+    stats: { works: 5, exhibitions: 0, collections: 0 }
   },
   contact: {
-    email: 'contacto@joselothomassiny.com',
-    phone: '+52 998 XXX XXXX',
-    instagram: '@joselothomassiny',
-    facebook: 'joselothomassiny',
-    whatsapp: '+52 998 XXX XXXX'
+    email: 'contacto@ejemplo.com',
+    phone: '+52 000 000 0000',
+    instagram: '',
+    facebook: '',
+    whatsapp: '+52 000 000 0000'
   },
-  exhibitions: [
-    { id: 1, name: 'Kahlo-Maya-Pok-Ta-Pok',  venue: 'Centro Cultural, Cancún',          year: '2025', status: 'past' },
-    { id: 2, name: 'A Través de la Noche',   venue: 'Evento Comunitario, Cancún',       year: '2025', status: 'past' },
-    { id: 3, name: 'Impulso 19',             venue: 'Colectiva, Ciudad de México',       year: '2019', status: 'past' },
-    { id: 4, name: 'Nuevos Horizontes',      venue: 'Galería Balance, Cancún',           year: '2026', status: 'upcoming' }
-  ],
+  exhibitions: [],
   lastSaved: null
 };
 
@@ -81,10 +72,11 @@ function resetSiteData() {
 
 // Category metadata shared across pages
 const CATEGORY_META = {
-  'painting':     { label: 'Pintura',      color: '#E4247A', gradient: 'linear-gradient(135deg, #E4247A, #FA7E1E)' },
-  'drawing':      { label: 'Dibujo',       color: '#275EEA', gradient: 'linear-gradient(135deg, #275EEA, #4AF2DC)' },
-  'digital':      { label: 'Arte Digital', color: '#4AF2DC', gradient: 'linear-gradient(135deg, #09F557, #4AF2DC)' },
-  'mixed-media':  { label: 'Técnica Mixta',color: '#9B2FAA', gradient: 'linear-gradient(135deg, #9B2FAA, #E4247A)' }
+  'painting':     { label: 'Pintura',       color: '#E4247A', gradient: 'linear-gradient(135deg, #E4247A, #FA7E1E)' },
+  'drawing':      { label: 'Dibujo',        color: '#275EEA', gradient: 'linear-gradient(135deg, #275EEA, #4AF2DC)' },
+  'digital':      { label: 'Arte Digital',  color: '#4AF2DC', gradient: 'linear-gradient(135deg, #09F557, #4AF2DC)' },
+  'mixed-media':  { label: 'Técnica Mixta', color: '#9B2FAA', gradient: 'linear-gradient(135deg, #9B2FAA, #E4247A)' },
+  'sculpture':    { label: 'Escultura',     color: '#FFCC00', gradient: 'linear-gradient(135deg, #FA7E1E, #FFCC00)' }
 };
 
 // Resolve an artwork's image to a usable src attribute.

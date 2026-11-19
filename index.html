@@ -110,6 +110,7 @@ body.menu-open #mobile-menu a:nth-child(5){transition-delay:.42s}
 .card.cat-drawing .img-wrap::after{background:var(--grad-cool)}
 .card.cat-digital .img-wrap::after{background:var(--grad-tropic)}
 .card.cat-mixed-media .img-wrap::after{background:var(--grad-mystic)}
+.card.cat-sculpture .img-wrap::after{background:var(--grad-fire)}
 .card:hover .img-wrap::after{opacity:1}
 .card .title-overlay{position:absolute;left:0;right:0;bottom:0;padding:16px 20px 18px;color:#fff;z-index:2;pointer-events:none}
 .card .title-overlay .to-title{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:18px;letter-spacing:1px;text-transform:uppercase;line-height:1.1;color:#fff}
@@ -120,6 +121,7 @@ body.menu-open #mobile-menu a:nth-child(5){transition-delay:.42s}
 .card.cat-drawing .cat{color:var(--azul)}
 .card.cat-digital .cat{color:var(--turquesa)}
 .card.cat-mixed-media .cat{color:var(--morado)}
+.card.cat-sculpture .cat{color:#FFCC00}
 .card h3{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.5px;text-transform:uppercase;line-height:1.05}
 .card .dim{font-size:13px;color:var(--text-muted)}
 .card .price{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:22px;background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -256,6 +258,7 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
           <button class="filter" data-filter="drawing">Dibujo</button>
           <button class="filter" data-filter="digital">Digital</button>
           <button class="filter" data-filter="mixed-media">Mixta</button>
+          <button class="filter" data-filter="sculpture">Escultura</button>
         </div>
       </div>
       <div class="grid" id="grid"></div>
@@ -327,7 +330,9 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
 <script>
 (function(){
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const DATA = getSiteData();
+  // Public page: always read from DEFAULT_DATA (the file). localStorage is
+  // ignored so content is identical across every domain (Vercel, custom, etc.).
+  const DATA = DEFAULT_DATA;
 
   // Year
   document.getElementById('year').textContent = new Date().getFullYear();

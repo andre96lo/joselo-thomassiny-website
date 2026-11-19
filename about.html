@@ -334,14 +334,17 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
 <script>
 (function(){
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const DATA = getSiteData();
+  // Public page: always read from DEFAULT_DATA (the file). localStorage is
+  // ignored so content is identical across every domain (Vercel, custom, etc.).
+  const DATA = DEFAULT_DATA;
 
   document.getElementById('year').textContent = new Date().getFullYear();
 
   // Bio
-  document.getElementById('bio-p1').textContent = DATA.bio.paragraph1;
-  document.getElementById('bio-p2').textContent = DATA.bio.paragraph2;
-  document.getElementById('statement-text').textContent = '«' + DATA.bio.statement + '»';
+  document.getElementById('bio-p1').textContent = DATA.bio.paragraph1 || '';
+  document.getElementById('bio-p2').textContent = DATA.bio.paragraph2 || '';
+  const stText = (DATA.bio.statement || '').trim();
+  document.getElementById('statement-text').textContent = stText ? ('«' + stText + '»') : '';
   document.getElementById('bio-portrait').src = getPortraitImageSrc(DATA.bio) || portraitPlaceholder();
 
   // Stats targets from data
@@ -374,9 +377,19 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
     wa.href = 'https://wa.me/' + ((c.whatsapp || c.phone) || '').replace(/\D/g,'');
     document.getElementById('info-phone').textContent = c.phone || '';
     const ig = document.getElementById('info-ig');
-    ig.href = 'https://instagram.com/' + (c.instagram || '').replace(/^@/,'');
+    if (c.instagram) {
+      ig.href = 'https://instagram.com/' + c.instagram.replace(/^@/,'');
+      ig.style.display = '';
+    } else {
+      ig.style.display = 'none';
+    }
     const fb = document.getElementById('info-fb');
-    fb.href = 'https://facebook.com/' + (c.facebook || '');
+    if (c.facebook) {
+      fb.href = 'https://facebook.com/' + c.facebook;
+      fb.style.display = '';
+    } else {
+      fb.style.display = 'none';
+    }
     // Footer
     const ul = document.getElementById('foot-contact');
     ul.innerHTML = [
