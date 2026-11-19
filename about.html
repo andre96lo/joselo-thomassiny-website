@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acerca — Joselo Thomassiny</title>
+<meta name="description" content="La historia, trayectoria, exposiciones y contacto del artista plástico mexicano Joselo Thomassiny.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;600italic&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F5ED; --cream-dark:#EDE9D8;
+  --black:#0A0A0A; --text:#1A1A1A; --text-mid:#555; --text-muted:#999;
+  --border:rgba(0,0,0,0.08);
+  --rosa:#E4247A; --morado:#9B2FAA; --naranja:#E8451C; --amarillo:#FFCC00;
+  --verde:#09F557; --azul:#275EEA; --turquesa:#4AF2DC; --atardecer:#FA7E1E;
+  --grad-warm:linear-gradient(135deg,#E4247A,#FA7E1E);
+  --grad-cool:linear-gradient(135deg,#275EEA,#4AF2DC);
+  --grad-mystic:linear-gradient(135deg,#9B2FAA,#E4247A);
+  --grad-tropic:linear-gradient(135deg,#09F557,#4AF2DC);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+input,textarea{font:inherit}
+::selection{background:var(--rosa);color:#fff}
+
+#loader{position:fixed;inset:0;background:var(--cream);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+#loader .name{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(28px,5vw,48px);letter-spacing:-1px;text-transform:uppercase}
+#loader .bar{width:160px;height:3px;background:rgba(0,0,0,0.08);border-radius:2px;overflow:hidden}
+#loader .fill{width:0%;height:100%;background:var(--grad-warm)}
+
+#scroll-progress{position:fixed;top:0;left:0;height:3px;background:var(--grad-warm);width:0%;z-index:120}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 48px;display:flex;align-items:center;justify-content:space-between;transition:background .3s,backdrop-filter .3s,padding .3s}
+.nav.scrolled{background:rgba(246,245,237,0.92);backdrop-filter:blur(16px);padding:14px 48px;border-bottom:1px solid var(--border)}
+.nav .logo{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:18px;text-transform:uppercase}
+.nav .links{display:flex;gap:28px;align-items:center}
+.nav .links a{font-size:14px;font-weight:500;position:relative;padding:4px 0}
+.nav .links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--rosa);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.nav .links a:hover::after,.nav .links a.active::after{transform:scaleX(1)}
+.nav .hamburger{display:none;width:28px;height:20px;position:relative}
+.nav .hamburger span{position:absolute;left:0;right:0;height:2px;background:var(--text);transition:all .3s}
+.nav .hamburger span:nth-child(1){top:0}
+.nav .hamburger span:nth-child(2){top:50%;margin-top:-1px}
+.nav .hamburger span:nth-child(3){bottom:0}
+body.menu-open .nav .hamburger span:nth-child(1){transform:translateY(9px) rotate(45deg);background:#fff}
+body.menu-open .nav .hamburger span:nth-child(2){opacity:0}
+body.menu-open .nav .hamburger span:nth-child(3){transform:translateY(-9px) rotate(-45deg);background:#fff}
+
+#mobile-menu{position:fixed;inset:0;background:var(--grad-warm);z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;pointer-events:none;transition:opacity .4s}
+body.menu-open #mobile-menu{opacity:1;pointer-events:auto}
+#mobile-menu a{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:clamp(40px,10vw,64px);color:#fff;text-transform:uppercase;letter-spacing:-1px;opacity:0;transform:translateY(20px);transition:all .5s}
+body.menu-open #mobile-menu a{opacity:1;transform:none}
+body.menu-open #mobile-menu a:nth-child(1){transition-delay:.1s}
+body.menu-open #mobile-menu a:nth-child(2){transition-delay:.18s}
+body.menu-open #mobile-menu a:nth-child(3){transition-delay:.26s}
+body.menu-open #mobile-menu a:nth-child(4){transition-delay:.34s}
+body.menu-open #mobile-menu a:nth-child(5){transition-delay:.42s}
+
+.container{max-width:1400px;margin:0 auto;padding:0 48px}
+.marker{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.marker .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--rosa)}
+.marker .lbl{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid)}
+.h2{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:clamp(44px,6.5vw,88px);letter-spacing:-2px;line-height:.95;text-transform:uppercase}
+.reveal{opacity:0;transform:translateY(28px)}
+.cta{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--black);color:#fff;border-radius:999px;font-weight:500;font-size:14px;letter-spacing:1px;text-transform:uppercase;transition:all .3s}
+.cta:hover{background:var(--rosa);transform:translateY(-2px);box-shadow:0 12px 30px rgba(228,36,122,0.35)}
+
+/* About hero */
+.about-hero{min-height:60vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:140px;padding-bottom:60px}
+.about-hero .blob{position:absolute;width:520px;height:520px;background:var(--morado);opacity:.2;filter:blur(90px);border-radius:50%;top:-80px;right:-120px;pointer-events:none}
+.about-hero h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(56px,10vw,140px);line-height:.92;letter-spacing:-3px;text-transform:uppercase;margin-bottom:20px}
+.about-hero h1 .accent{background:var(--grad-mystic);-webkit-background-clip:text;background-clip:text;color:transparent}
+.about-hero p{font-size:clamp(16px,1.5vw,20px);color:var(--text-mid);max-width:620px}
+
+/* Bio */
+.bio{padding:80px 0}
+.bio-grid{display:grid;grid-template-columns:55% 45%;gap:60px;align-items:start}
+.bio-text p{font-size:17px;line-height:1.75;margin-bottom:20px;color:var(--text)}
+.bio-img-wrap{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--cream-dark)}
+.bio-img-wrap img{width:100%;height:100%;object-fit:cover}
+.bio-img-wrap .bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--grad-mystic)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:80px;padding-top:60px;border-top:1px solid var(--border)}
+.stat .num{font-family:'Big Shoulders Display',sans-serif;font-weight:300;font-size:clamp(44px,5vw,64px);line-height:1;letter-spacing:-2px;background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .lbl{font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);margin-top:8px}
+
+/* Statement */
+.statement{background:var(--cream-dark);padding:140px 0;text-align:center;position:relative}
+.statement .dots{display:flex;justify-content:center;gap:16px;margin-bottom:40px}
+.statement .dot{width:8px;height:8px;border-radius:50%}
+.statement .dot.rosa{background:var(--rosa)}
+.statement .dot.morado{background:var(--morado)}
+.statement blockquote{font-family:'Big Shoulders Display',sans-serif;font-weight:400;font-size:clamp(28px,4vw,48px);letter-spacing:-1px;line-height:1.1;max-width:780px;margin:0 auto;color:var(--text)}
+.statement .byline{margin-top:28px;font-style:italic;color:var(--text-mid)}
+
+/* Exhibitions - dark */
+.exhibitions{background:var(--black);color:var(--cream);padding:120px 0;position:relative;border-top:5px solid transparent;background-origin:border-box;background-clip:padding-box,border-box}
+.exhibitions::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--grad-warm)}
+.exhibitions .marker .num{color:var(--rosa)}
+.exhibitions .marker .lbl{color:rgba(246,245,237,0.5)}
+.exhibitions h2{color:var(--cream);margin-bottom:60px}
+.ex-table{width:100%;border-collapse:collapse}
+.ex-row{display:grid;grid-template-columns:2fr 2fr 1fr 1fr;gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid rgba(246,245,237,0.1);transition:background .25s}
+.ex-row:hover{background:rgba(246,245,237,0.03)}
+.ex-head{color:rgba(246,245,237,0.5);font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid rgba(246,245,237,0.15);padding-bottom:16px}
+.ex-row .name{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:22px;letter-spacing:-.5px;text-transform:uppercase}
+.ex-row .venue{color:rgba(246,245,237,0.7);font-size:14px}
+.ex-row .yr{color:rgba(246,245,237,0.7);font-size:14px;font-family:'JetBrains Mono',monospace}
+.pill{display:inline-block;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase}
+.pill.past{background:rgba(246,245,237,0.08);color:rgba(246,245,237,0.6)}
+.pill.upcoming{background:var(--rosa);color:#fff}
+
+/* Contact */
+.contact{padding:120px 0;background:var(--cream)}
+.contact-grid{display:grid;grid-template-columns:55% 45%;gap:80px;align-items:start}
+.contact h2{margin-bottom:40px}
+.field{margin-bottom:28px}
+.field label{display:block;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);margin-bottom:10px}
+.field input,.field textarea{width:100%;border:none;border-bottom:1px solid rgba(0,0,0,0.2);padding:10px 0;background:transparent;font-size:16px;color:var(--text);transition:border-color .3s}
+.field input:focus,.field textarea:focus{outline:none;border-bottom-color:var(--rosa)}
+.field textarea{resize:vertical;min-height:120px}
+.form-submit{margin-top:20px}
+.info-block{margin-bottom:36px}
+.info-block .lbl{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);margin-bottom:8px}
+.info-block .val{font-family:'Big Shoulders Display',sans-serif;font-weight:500;font-size:28px;letter-spacing:-.5px}
+.info-block a:hover{color:var(--rosa)}
+.socials{display:flex;gap:16px;margin-top:8px}
+.socials a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--cream-dark);transition:all .3s;font-size:13px;font-weight:600}
+.socials a:hover{background:var(--grad-warm);color:#fff}
+
+footer{background:var(--black);color:var(--cream);padding:80px 0 40px}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px;margin-bottom:60px}
+footer h4{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:36px;text-transform:uppercase;letter-spacing:-.5px;margin-bottom:12px}
+footer p{color:rgba(246,245,237,0.6);font-size:14px;max-width:360px}
+footer .col-head{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(246,245,237,0.5);margin-bottom:16px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+footer a{color:var(--cream);transition:color .2s;font-size:14px}
+footer a:hover{color:var(--rosa)}
+footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display:flex;justify-content:space-between;font-size:12px;color:rgba(246,245,237,0.5);letter-spacing:1px;text-transform:uppercase}
+
+#cursor{position:fixed;width:10px;height:10px;background:var(--rosa);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;mix-blend-mode:difference}
+#cursor.big{width:56px;height:56px;background:var(--amarillo)}
+@media (max-width:1023px){#cursor{display:none}}
+
+@media (max-width:1023px){
+  .container,.nav{padding-left:32px;padding-right:32px}
+  .bio-grid,.contact-grid{grid-template-columns:1fr;gap:40px}
+  footer .cols{grid-template-columns:1fr 1fr;gap:40px}
+  .ex-row{grid-template-columns:1fr 1fr}
+}
+@media (max-width:767px){
+  .container,.nav{padding-left:24px;padding-right:24px}
+  .nav .links{display:none}
+  .nav .hamburger{display:block}
+  .stats{grid-template-columns:1fr;gap:28px}
+  .ex-head{display:none}
+  .ex-row{grid-template-columns:1fr;gap:6px;padding:20px 0}
+  .ex-row .yr,.ex-row .venue{font-size:13px}
+  footer .cols{grid-template-columns:1fr;gap:32px}
+  footer .foot{flex-direction:column;gap:10px;text-align:center}
+}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1!important;transform:none!important}
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="name">Joselo Thomassiny</div>
+  <div class="bar"><div class="fill"></div></div>
+</div>
+
+<div id="scroll-progress"></div>
+<div id="cursor" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a href="index.html" class="logo">Joselo Thomassiny</a>
+  <nav class="links">
+    <a href="index.html">Inicio</a>
+    <a href="index.html#obras">Obras</a>
+    <a href="#top" class="active">Acerca</a>
+    <a href="#exposiciones">Exposiciones</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+
+<div id="mobile-menu" aria-hidden="true">
+  <a href="index.html">Inicio</a>
+  <a href="index.html#obras">Obras</a>
+  <a href="#top">Acerca</a>
+  <a href="#exposiciones">Exposiciones</a>
+  <a href="#contacto">Contacto</a>
+</div>
+
+<main id="top">
+  <section class="about-hero">
+    <div class="blob"></div>
+    <div class="container">
+      <h1 class="reveal">
+        <span class="accent">Acerca</span><br>Del Artista
+      </h1>
+      <p class="reveal">La historia detrás del arte.</p>
+    </div>
+  </section>
+
+  <section class="bio">
+    <div class="container">
+      <div class="marker reveal"><span class="num">[01]</span><span class="lbl">Biografía</span></div>
+      <h2 class="h2 reveal" style="margin-bottom:40px">Donde el Arte Encuentra la Conciencia Social</h2>
+      <div class="bio-grid">
+        <div class="bio-text reveal">
+          <p id="bio-p1"></p>
+          <p id="bio-p2"></p>
+        </div>
+        <div class="bio-img-wrap reveal">
+          <img id="bio-portrait" alt="Joselo Thomassiny" loading="lazy">
+          <div class="bar"></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat reveal"><div class="num counter" data-target="17">0</div><div class="lbl">Obras</div></div>
+        <div class="stat reveal"><div class="num counter" data-target="10">0</div><div class="lbl">Exposiciones</div></div>
+        <div class="stat reveal"><div class="num counter" data-target="5">0</div><div class="lbl">Colecciones</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="statement">
+    <div class="container">
+      <div class="dots reveal"><span class="dot rosa"></span><span class="dot morado"></span></div>
+      <blockquote class="reveal" id="statement-text"></blockquote>
+      <div class="byline reveal">— Joselo Thomassiny</div>
+    </div>
+  </section>
+
+  <section class="exhibitions" id="exposiciones">
+    <div class="container">
+      <div class="marker reveal"><span class="num">[02]</span><span class="lbl">Trayectoria</span></div>
+      <h2 class="h2 reveal">Exposiciones</h2>
+      <div class="ex-table">
+        <div class="ex-row ex-head">
+          <span>¿Dónde?</span><span>Obra</span><span>Fechas</span><span>Estado</span>
+        </div>
+        <div id="ex-rows"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contacto">
+    <div class="container">
+      <div class="marker reveal"><span class="num">[03]</span><span class="lbl">Contacto</span></div>
+      <h2 class="h2 reveal">Hablemos</h2>
+      <div class="contact-grid">
+        <form class="reveal" id="contact-form" onsubmit="return false">
+          <div class="field">
+            <label for="f-name">Nombre</label>
+            <input id="f-name" type="text" required>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" type="email" required>
+          </div>
+          <div class="field">
+            <label for="f-msg">Mensaje</label>
+            <textarea id="f-msg" required></textarea>
+          </div>
+          <button type="submit" class="cta form-submit" id="f-submit">Enviar Mensaje</button>
+        </form>
+        <div class="reveal">
+          <div class="info-block">
+            <div class="lbl">Email</div>
+            <div class="val"><a id="info-email" href="#"></a></div>
+          </div>
+          <div class="info-block">
+            <div class="lbl">WhatsApp</div>
+            <div class="val"><a id="info-wa" href="#"></a></div>
+          </div>
+          <div class="info-block">
+            <div class="lbl">Teléfono</div>
+            <div class="val" id="info-phone"></div>
+          </div>
+          <div class="info-block">
+            <div class="lbl">Redes Sociales</div>
+            <div class="socials">
+              <a id="info-ig" href="#" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+              <a id="info-fb" href="#" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="cols">
+      <div>
+        <h4>Joselo<br>Thomassiny</h4>
+        <p>Artista plástico mexicano. Pintura, dibujo, arte digital y técnica mixta desde Cancún.</p>
+      </div>
+      <div>
+        <div class="col-head">Navegar</div>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="index.html#obras">Obras</a></li>
+          <li><a href="#top">Acerca</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-head">Contacto</div>
+        <ul id="foot-contact"></ul>
+      </div>
+    </div>
+    <div class="foot">
+      <span>© <span id="year"></span> Joselo Thomassiny</span>
+      <span>Cancún · México</span>
+    </div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script>
+(function(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DATA = getSiteData();
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Bio
+  document.getElementById('bio-p1').textContent = DATA.bio.paragraph1;
+  document.getElementById('bio-p2').textContent = DATA.bio.paragraph2;
+  document.getElementById('statement-text').textContent = '«' + DATA.bio.statement + '»';
+  document.getElementById('bio-portrait').src = getPortraitImageSrc(DATA.bio) || portraitPlaceholder();
+
+  // Stats targets from data
+  const stats = DATA.bio.stats || {works:17,exhibitions:10,collections:5};
+  const counters = document.querySelectorAll('.counter');
+  counters[0].dataset.target = stats.works;
+  counters[1].dataset.target = stats.exhibitions;
+  counters[2].dataset.target = stats.collections;
+
+  // Exhibitions
+  (function(){
+    const rows = DATA.exhibitions || [];
+    document.getElementById('ex-rows').innerHTML = rows.map(e=>`
+      <div class="ex-row reveal-row">
+        <span class="venue">${e.venue}</span>
+        <span class="name">${e.name}</span>
+        <span class="yr">${e.year}</span>
+        <span><span class="pill ${e.status}">${e.status==='upcoming'?'Próxima':'Pasada'}</span></span>
+      </div>`).join('');
+  })();
+
+  // Contact info
+  (function(){
+    const c = DATA.contact;
+    const email = document.getElementById('info-email');
+    email.textContent = c.email || '';
+    email.href = 'mailto:' + (c.email || '');
+    const wa = document.getElementById('info-wa');
+    wa.textContent = c.whatsapp || c.phone || '';
+    wa.href = 'https://wa.me/' + ((c.whatsapp || c.phone) || '').replace(/\D/g,'');
+    document.getElementById('info-phone').textContent = c.phone || '';
+    const ig = document.getElementById('info-ig');
+    ig.href = 'https://instagram.com/' + (c.instagram || '').replace(/^@/,'');
+    const fb = document.getElementById('info-fb');
+    fb.href = 'https://facebook.com/' + (c.facebook || '');
+    // Footer
+    const ul = document.getElementById('foot-contact');
+    ul.innerHTML = [
+      c.email ? `<li><a href="mailto:${c.email}">${c.email}</a></li>` : '',
+      (c.whatsapp||c.phone) ? `<li><a href="tel:${(c.whatsapp||c.phone).replace(/\s/g,'')}">${c.whatsapp||c.phone}</a></li>` : '',
+      c.instagram ? `<li><a href="https://instagram.com/${c.instagram.replace(/^@/,'')}" target="_blank" rel="noopener">${c.instagram}</a></li>` : ''
+    ].join('');
+  })();
+
+  // Contact form
+  document.getElementById('f-submit').addEventListener('click', e=>{
+    e.preventDefault();
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const msg = document.getElementById('f-msg').value.trim();
+    if(!name || !email || !msg) return;
+    const btn = document.getElementById('f-submit');
+    btn.textContent = '✓ Enviado';
+    btn.style.background = 'var(--rosa)';
+    setTimeout(()=>{
+      btn.textContent = 'Enviar Mensaje';
+      btn.style.background = '';
+      document.getElementById('contact-form').reset();
+    }, 3000);
+  });
+
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  const prog = document.getElementById('scroll-progress');
+  function onScroll(){
+    const y = window.scrollY;
+    if(y > 60) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = h>0 ? (y/h*100)+'%' : '0%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  document.getElementById('hamburger').addEventListener('click', ()=>document.body.classList.toggle('menu-open'));
+  document.querySelectorAll('#mobile-menu a').forEach(a=>a.addEventListener('click', ()=>document.body.classList.remove('menu-open')));
+
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  if(window.matchMedia('(pointer: fine)').matches){
+    document.addEventListener('mousemove', e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';});
+    document.addEventListener('mouseover', e=>{
+      if(e.target.closest('.cta, a, button')) cursor.classList.add('big'); else cursor.classList.remove('big');
+    });
+  } else cursor.style.display='none';
+
+  window.addEventListener('load', ()=>{
+    const loader = document.getElementById('loader');
+    const fill = loader.querySelector('.fill');
+    if(reduced || !window.gsap){
+      loader.style.display='none';
+      document.querySelectorAll('.reveal, .reveal-row').forEach(el=>{el.style.opacity=1;el.style.transform='none'});
+      return;
+    }
+    const tl = gsap.timeline();
+    tl.to(fill, {width:'100%',duration:.8,ease:'power2.out'})
+      .to(loader, {y:'-100%',duration:.6,ease:'power4.inOut',onComplete:()=>loader.style.display='none'});
+
+    if(window.Lenis){
+      const lenis = new Lenis({duration:1.1});
+      function raf(t){lenis.raf(t);requestAnimationFrame(raf);}
+      requestAnimationFrame(raf);
+      lenis.on('scroll', ScrollTrigger.update);
+    }
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.querySelectorAll('.reveal').forEach(el=>{
+      gsap.to(el, {opacity:1,y:0,duration:.8,ease:'power3.out', scrollTrigger:{trigger:el, start:'top 85%'}});
+    });
+
+    // Exhibition rows slide
+    gsap.from('.reveal-row', {x:-30, opacity:0, duration:.6, stagger:.1,
+      scrollTrigger:{trigger:'#ex-rows', start:'top 80%'}});
+
+    // Counters
+    document.querySelectorAll('.counter').forEach(el=>{
+      const target = parseInt(el.dataset.target, 10) || 0;
+      gsap.fromTo(el, {innerText:0}, {
+        innerText:target, duration:2, ease:'power2.out', snap:{innerText:1},
+        scrollTrigger:{trigger:el, start:'top 85%'}, onUpdate:function(){el.textContent = Math.floor(this.targets()[0].innerText) + '+';}
+      });
+    });
+  });
+
+  // Cross-page fade only for links leaving this page
+  document.querySelectorAll('.nav a, footer a, .cta').forEach(a=>{
+    const href = a.getAttribute('href');
+    if(!href || href.startsWith('#')) return;
+    if(!/\.html$/.test(href)) return;
+    a.addEventListener('click', e=>{
+      if(reduced || !window.gsap) return;
+      e.preventDefault();
+      gsap.to('main, footer', {opacity:0, y:-10, duration:.35, onComplete:()=>{ window.location.href = href; }});
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joselo Thomassiny — Artista Plástico Mexicano</title>
+<meta name="description" content="Obra del artista plástico mexicano Joselo Thomassiny. Pintura, dibujo, arte digital y técnica mixta desde Cancún.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F5ED; --cream-dark:#EDE9D8;
+  --black:#0A0A0A; --text:#1A1A1A; --text-mid:#555; --text-muted:#999;
+  --border:rgba(0,0,0,0.08);
+  --rosa:#E4247A; --morado:#9B2FAA; --naranja:#E8451C; --amarillo:#FFCC00;
+  --verde:#09F557; --azul:#275EEA; --turquesa:#4AF2DC; --atardecer:#FA7E1E;
+  --grad-warm:linear-gradient(135deg,#E4247A,#FA7E1E);
+  --grad-sunset:linear-gradient(135deg,#E8451C,#FFCC00);
+  --grad-cool:linear-gradient(135deg,#275EEA,#4AF2DC);
+  --grad-mystic:linear-gradient(135deg,#9B2FAA,#E4247A);
+  --grad-tropic:linear-gradient(135deg,#09F557,#4AF2DC);
+  --grad-fire:linear-gradient(135deg,#E8451C,#9B2FAA);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--cream);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+input,textarea{font:inherit}
+::selection{background:var(--rosa);color:#fff}
+
+/* Loader */
+#loader{position:fixed;inset:0;background:var(--cream);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+#loader .name{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(28px,5vw,48px);letter-spacing:-1px;text-transform:uppercase}
+#loader .bar{width:160px;height:3px;background:rgba(0,0,0,0.08);border-radius:2px;overflow:hidden}
+#loader .fill{width:0%;height:100%;background:var(--grad-warm)}
+
+/* Scroll progress */
+#scroll-progress{position:fixed;top:0;left:0;height:3px;background:var(--grad-warm);width:0%;z-index:120;transform-origin:left}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 48px;display:flex;align-items:center;justify-content:space-between;transition:background .3s,backdrop-filter .3s,padding .3s}
+.nav.scrolled{background:rgba(246,245,237,0.92);backdrop-filter:blur(16px);padding:14px 48px;border-bottom:1px solid var(--border)}
+.nav .logo{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:18px;letter-spacing:0;text-transform:uppercase}
+.nav .links{display:flex;gap:28px;align-items:center}
+.nav .links a{font-size:14px;font-weight:500;position:relative;padding:4px 0}
+.nav .links a::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--rosa);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.nav .links a:hover::after,.nav .links a.active::after{transform:scaleX(1)}
+.nav .hamburger{display:none;width:28px;height:20px;position:relative}
+.nav .hamburger span{position:absolute;left:0;right:0;height:2px;background:var(--text);transition:all .3s}
+.nav .hamburger span:nth-child(1){top:0}
+.nav .hamburger span:nth-child(2){top:50%;margin-top:-1px}
+.nav .hamburger span:nth-child(3){bottom:0}
+body.menu-open .nav .hamburger span:nth-child(1){transform:translateY(9px) rotate(45deg);background:#fff}
+body.menu-open .nav .hamburger span:nth-child(2){opacity:0}
+body.menu-open .nav .hamburger span:nth-child(3){transform:translateY(-9px) rotate(-45deg);background:#fff}
+
+/* Mobile menu overlay */
+#mobile-menu{position:fixed;inset:0;background:var(--grad-warm);z-index:90;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;opacity:0;pointer-events:none;transition:opacity .4s}
+body.menu-open #mobile-menu{opacity:1;pointer-events:auto}
+#mobile-menu a{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:clamp(40px,10vw,64px);color:#fff;text-transform:uppercase;letter-spacing:-1px;transform:translateY(20px);opacity:0;transition:all .5s}
+body.menu-open #mobile-menu a{transform:translateY(0);opacity:1}
+body.menu-open #mobile-menu a:nth-child(1){transition-delay:.1s}
+body.menu-open #mobile-menu a:nth-child(2){transition-delay:.18s}
+body.menu-open #mobile-menu a:nth-child(3){transition-delay:.26s}
+body.menu-open #mobile-menu a:nth-child(4){transition-delay:.34s}
+body.menu-open #mobile-menu a:nth-child(5){transition-delay:.42s}
+
+/* Shared */
+.container{max-width:1400px;margin:0 auto;padding:0 48px}
+.label{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid)}
+.marker{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.marker .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--rosa)}
+.marker .lbl{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid)}
+.h2{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:clamp(48px,8vw,100px);letter-spacing:-2px;line-height:.95;text-transform:uppercase}
+.reveal{opacity:0;transform:translateY(28px)}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding-top:100px}
+.hero .blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.hero .blob.a{width:520px;height:520px;background:var(--rosa);opacity:.25;top:-80px;right:-80px}
+.hero .blob.b{width:420px;height:420px;background:var(--amarillo);opacity:.18;bottom:-60px;left:-60px}
+.hero .content{position:relative;z-index:2;max-width:1100px}
+.hero .label{margin-bottom:28px}
+.hero h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(56px,10vw,140px);line-height:.92;letter-spacing:-3px;text-transform:uppercase;margin-bottom:28px}
+.hero h1 .line1{background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;color:transparent;display:block}
+.hero h1 .line2{display:block;color:var(--text)}
+.hero p{font-size:clamp(16px,1.6vw,20px);max-width:620px;color:var(--text-mid);margin-bottom:40px}
+.cta{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--black);color:#fff;border-radius:999px;font-weight:500;font-size:14px;letter-spacing:1px;text-transform:uppercase;transition:all .3s}
+.cta:hover{background:var(--rosa);transform:translateY(-2px);box-shadow:0 12px 30px rgba(228,36,122,0.35)}
+.cta .arrow{display:inline-block;transition:transform .3s}
+.cta:hover .arrow{transform:translateY(3px)}
+
+/* Gallery */
+.gallery{padding:120px 0 80px}
+.gallery-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:40px;margin-bottom:60px}
+.filters{display:flex;gap:10px;flex-wrap:wrap}
+.filter{padding:10px 20px;border:1px solid var(--border);border-radius:999px;font-size:13px;font-weight:500;letter-spacing:.5px;transition:all .25s}
+.filter:hover{border-color:var(--rosa);color:var(--rosa)}
+.filter.active{background:var(--black);color:var(--cream);border-color:var(--black)}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
+.card{cursor:pointer;position:relative}
+.card .img-wrap{position:relative;aspect-ratio:3/4;overflow:hidden;background:var(--cream-dark);border-radius:2px}
+.card .img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.25,.46,.45,.94)}
+.card:hover .img-wrap img{transform:scale(1.04)}
+.card .img-wrap::after{content:'';position:absolute;left:0;right:0;bottom:0;height:4px;opacity:0;transition:opacity .3s}
+.card.cat-painting .img-wrap::after{background:var(--grad-warm);opacity:0}
+.card.cat-drawing .img-wrap::after{background:var(--grad-cool)}
+.card.cat-digital .img-wrap::after{background:var(--grad-tropic)}
+.card.cat-mixed-media .img-wrap::after{background:var(--grad-mystic)}
+.card:hover .img-wrap::after{opacity:1}
+.card-meta{padding:20px 0 0;display:flex;flex-direction:column;gap:8px}
+.card .cat{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase}
+.card.cat-painting .cat{color:var(--rosa)}
+.card.cat-drawing .cat{color:var(--azul)}
+.card.cat-digital .cat{color:var(--turquesa)}
+.card.cat-mixed-media .cat{color:var(--morado)}
+.card h3{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.5px;text-transform:uppercase;line-height:1.05}
+.card .dim{font-size:13px;color:var(--text-muted)}
+.card .price{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:22px;background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;color:transparent}
+.card .price.sold{background:none;color:var(--naranja);text-decoration:line-through}
+.card .price.inquire{background:none;color:var(--morado)}
+
+/* Modal */
+#modal{position:fixed;inset:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);z-index:200;display:none;align-items:center;justify-content:center;padding:40px;overflow-y:auto}
+#modal.open{display:flex}
+#modal .box{background:var(--cream);max-width:1000px;width:100%;max-height:90vh;border-radius:4px;overflow:hidden;display:grid;grid-template-columns:55% 45%;transform:scale(.92) translateY(20px);opacity:0;transition:opacity .3s}
+#modal.open .box{opacity:1}
+#modal .img-side{position:relative;background:var(--cream-dark);overflow:hidden;max-height:90vh}
+#modal .img-side img{width:100%;height:100%;object-fit:cover}
+#modal .img-side .bar{position:absolute;left:0;right:0;bottom:0;height:5px}
+#modal .info-side{padding:48px;overflow-y:auto;max-height:90vh;display:flex;flex-direction:column;gap:20px}
+#modal .cat{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase}
+#modal h2{font-family:'Big Shoulders Display',sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);letter-spacing:-1px;text-transform:uppercase;line-height:1}
+#modal .divider{width:60px;height:3px;background:var(--grad-warm)}
+#modal .details{display:flex;flex-direction:column}
+#modal .row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--border);font-size:15px;gap:16px}
+#modal .row span:first-child{color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;font-size:11px;font-weight:500;flex-shrink:0}
+#modal .row span:last-child{text-align:right;color:var(--text)}
+#modal .price-big{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:36px;margin-top:8px}
+#modal .price-big.available{background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;color:transparent}
+#modal .price-big.sold{color:var(--naranja);text-decoration:line-through}
+#modal .price-big.inquire{color:var(--morado)}
+#modal .close{position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:50%;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .3s;z-index:3}
+#modal .close:hover{background:var(--rosa);color:#fff;transform:rotate(90deg)}
+
+/* Teaser */
+.teaser{padding:120px 0;text-align:center;background:var(--cream-dark)}
+.teaser h3{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:clamp(32px,5vw,56px);text-transform:uppercase;letter-spacing:-1px;margin-bottom:28px;line-height:1}
+
+/* Footer */
+footer{background:var(--black);color:var(--cream);padding:80px 0 40px}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px;margin-bottom:60px}
+footer h4{font-family:'Big Shoulders Display',sans-serif;font-weight:600;font-size:36px;text-transform:uppercase;letter-spacing:-.5px;margin-bottom:12px}
+footer p{color:rgba(246,245,237,0.6);font-size:14px;max-width:360px}
+footer .col-head{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(246,245,237,0.5);margin-bottom:16px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+footer a{color:var(--cream);transition:color .2s;font-size:14px}
+footer a:hover{color:var(--rosa)}
+footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display:flex;justify-content:space-between;font-size:12px;color:rgba(246,245,237,0.5);letter-spacing:1px;text-transform:uppercase}
+
+/* Custom cursor */
+#cursor{position:fixed;width:10px;height:10px;background:var(--rosa);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;mix-blend-mode:difference}
+#cursor.big{width:56px;height:56px;background:var(--amarillo)}
+@media (max-width:1023px){#cursor{display:none}}
+
+/* Responsive */
+@media (max-width:1023px){
+  .container,.nav{padding-left:32px;padding-right:32px}
+  footer .cols{grid-template-columns:1fr 1fr;gap:40px}
+}
+@media (max-width:767px){
+  .container,.nav{padding-left:24px;padding-right:24px}
+  .nav .links{display:none}
+  .nav .hamburger{display:block}
+  .hero{padding-top:80px;min-height:90vh}
+  .grid{grid-template-columns:1fr;gap:28px}
+  .gallery{padding:80px 0 60px}
+  .gallery-head{flex-direction:column;align-items:flex-start}
+  #modal{padding:0}
+  #modal .box{grid-template-columns:1fr;max-height:100vh;border-radius:0}
+  #modal .img-side{max-height:40vh}
+  #modal .info-side{padding:32px 24px}
+  footer .cols{grid-template-columns:1fr;gap:32px}
+  footer .foot{flex-direction:column;gap:10px;text-align:center}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1!important;transform:none!important}
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <div class="name">Joselo Thomassiny</div>
+  <div class="bar"><div class="fill"></div></div>
+</div>
+
+<div id="scroll-progress"></div>
+<div id="cursor" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a href="index.html" class="logo">Joselo Thomassiny</a>
+  <nav class="links">
+    <a href="#top" class="active">Inicio</a>
+    <a href="#obras">Obras</a>
+    <a href="about.html">Acerca</a>
+    <a href="about.html#exposiciones">Exposiciones</a>
+    <a href="about.html#contacto">Contacto</a>
+  </nav>
+  <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+</header>
+
+<div id="mobile-menu" aria-hidden="true">
+  <a href="#top">Inicio</a>
+  <a href="#obras">Obras</a>
+  <a href="about.html">Acerca</a>
+  <a href="about.html#exposiciones">Exposiciones</a>
+  <a href="about.html#contacto">Contacto</a>
+</div>
+
+<main id="top">
+  <section class="hero">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="container">
+      <div class="content">
+        <div class="label hero-label">Artista Plástico — Cancún, México</div>
+        <h1>
+          <span class="line1 hero-h1-l1">Joselo</span>
+          <span class="line2 hero-h1-l2">Thomassiny</span>
+        </h1>
+        <p class="hero-desc">Creo arte que despierta la conciencia y une comunidades. Pintura, dibujo y medios digitales desde el Caribe Mexicano.</p>
+        <a href="#obras" class="cta hero-cta">Explorar Obras <span class="arrow">↓</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery" id="obras">
+    <div class="container">
+      <div class="gallery-head">
+        <div class="reveal">
+          <div class="marker"><span class="num">[01]</span><span class="lbl">Catálogo</span></div>
+          <h2 class="h2">Pinturas</h2>
+        </div>
+        <div class="filters reveal" id="filters">
+          <button class="filter active" data-filter="all">Todas</button>
+          <button class="filter" data-filter="painting">Pintura</button>
+          <button class="filter" data-filter="drawing">Dibujo</button>
+          <button class="filter" data-filter="digital">Digital</button>
+          <button class="filter" data-filter="mixed-media">Mixta</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="teaser">
+    <div class="container">
+      <h3 class="reveal">¿Quieres saber más sobre el artista?</h3>
+      <a href="about.html" class="cta reveal">Conocer al Artista <span class="arrow">→</span></a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="cols">
+      <div>
+        <h4>Joselo<br>Thomassiny</h4>
+        <p>Artista plástico mexicano. Pintura, dibujo, arte digital y técnica mixta desde Cancún.</p>
+      </div>
+      <div>
+        <div class="col-head">Navegar</div>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="#obras">Obras</a></li>
+          <li><a href="about.html">Acerca</a></li>
+          <li><a href="about.html#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-head">Contacto</div>
+        <ul id="foot-contact"></ul>
+      </div>
+    </div>
+    <div class="foot">
+      <span>© <span id="year"></span> Joselo Thomassiny</span>
+      <span>Cancún · México</span>
+    </div>
+  </div>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="box">
+    <button class="close" id="close-modal" aria-label="Cerrar">✕</button>
+    <div class="img-side">
+      <img id="m-img" alt="">
+      <div class="bar" id="m-bar"></div>
+    </div>
+    <div class="info-side">
+      <div class="cat" id="m-cat"></div>
+      <h2 id="m-title"></h2>
+      <div class="divider"></div>
+      <div class="details">
+        <div class="row"><span>Título</span><span id="m-row-title"></span></div>
+        <div class="row"><span>Tamaño</span><span id="m-size"></span></div>
+        <div class="row"><span>Técnica</span><span id="m-tech"></span></div>
+        <div class="row"><span>Medio</span><span id="m-medium"></span></div>
+      </div>
+      <div class="price-big" id="m-price"></div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<script>
+(function(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DATA = getSiteData();
+
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Footer contact
+  (function(){
+    const c = DATA.contact || {};
+    const ul = document.getElementById('foot-contact');
+    const rows = [
+      ['Email', c.email, 'mailto:' + (c.email||'')],
+      ['WhatsApp', c.whatsapp || c.phone, (c.whatsapp||c.phone) ? 'tel:' + (c.whatsapp||c.phone).replace(/\s/g,'') : null],
+      ['Instagram', c.instagram, c.instagram ? 'https://instagram.com/' + c.instagram.replace(/^@/,'') : null]
+    ];
+    ul.innerHTML = rows.filter(r=>r[1]).map(r => `<li>${r[2]?`<a href="${r[2]}" target="_blank" rel="noopener">${r[1]}</a>`:r[1]}</li>`).join('');
+  })();
+
+  // Render gallery
+  function render(cards){
+    const grid = document.getElementById('grid');
+    grid.innerHTML = cards.map(a=>{
+      const meta = CATEGORY_META[a.category] || CATEGORY_META['painting'];
+      const img = getArtworkImageSrc(a);
+      const priceCls = a.status === 'sold' ? 'sold' : (a.status === 'inquire' ? 'inquire' : '');
+      return `<article class="card cat-${a.category}" data-cat="${a.category}" data-id="${a.id}">
+        <div class="img-wrap"><img src="${img}" alt="${a.title}" loading="lazy"></div>
+        <div class="card-meta">
+          <span class="cat">${meta.label}</span>
+          <h3>${a.title}</h3>
+          <span class="dim">${a.size}</span>
+          <span class="price ${priceCls}">${a.price}</span>
+        </div>
+      </article>`;
+    }).join('');
+    grid.querySelectorAll('.card').forEach(el=>{
+      el.addEventListener('click', ()=>openModal(parseInt(el.dataset.id,10)));
+    });
+  }
+  render(DATA.artworks);
+
+  // Filters
+  let currentFilter = 'all';
+  document.getElementById('filters').addEventListener('click', e=>{
+    const btn = e.target.closest('.filter');
+    if(!btn) return;
+    document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    const grid = document.getElementById('grid');
+    if(reduced || !window.gsap){
+      Array.from(grid.children).forEach(c=>{
+        c.style.display = (currentFilter==='all' || c.dataset.cat===currentFilter) ? '' : 'none';
+      });
+      return;
+    }
+    gsap.to(grid.children, {opacity:0, y:12, duration:.25, stagger:.02, onComplete:()=>{
+      Array.from(grid.children).forEach(c=>{
+        c.style.display = (currentFilter==='all' || c.dataset.cat===currentFilter) ? '' : 'none';
+      });
+      gsap.fromTo(grid.children, {opacity:0,y:12}, {opacity:1,y:0,duration:.35,stagger:.04});
+    }});
+  });
+
+  // Modal
+  const modal = document.getElementById('modal');
+  function openModal(id){
+    const a = DATA.artworks.find(x=>x.id===id); if(!a) return;
+    const meta = CATEGORY_META[a.category] || CATEGORY_META['painting'];
+    const img = getArtworkImageSrc(a);
+    document.getElementById('m-img').src = img;
+    document.getElementById('m-img').alt = a.title;
+    document.getElementById('m-bar').style.background = meta.gradient;
+    const catEl = document.getElementById('m-cat');
+    catEl.textContent = meta.label;
+    catEl.style.color = meta.color;
+    document.getElementById('m-title').textContent = a.title;
+    document.getElementById('m-row-title').textContent = a.title;
+    document.getElementById('m-size').textContent = a.size;
+    document.getElementById('m-tech').textContent = a.technique;
+    document.getElementById('m-medium').textContent = a.medium;
+    const pEl = document.getElementById('m-price');
+    pEl.textContent = a.price;
+    pEl.className = 'price-big ' + (a.status === 'sold' ? 'sold' : (a.status === 'inquire' ? 'inquire' : 'available'));
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    if(window.gsap && !reduced){
+      gsap.fromTo(modal.querySelector('.box'),
+        {scale:.92,y:20,opacity:0},
+        {scale:1,y:0,opacity:1,duration:.4,ease:'back.out(1.5)'});
+    }
+  }
+  function closeModal(){
+    if(!modal.classList.contains('open')) return;
+    if(window.gsap && !reduced){
+      gsap.to(modal.querySelector('.box'), {scale:.95,y:10,opacity:0,duration:.25,onComplete:()=>{
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden','true');
+        document.body.style.overflow='';
+      }});
+    } else {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow='';
+    }
+  }
+  document.getElementById('close-modal').addEventListener('click', closeModal);
+  modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+  // Nav scroll + progress
+  const nav = document.getElementById('nav');
+  const prog = document.getElementById('scroll-progress');
+  function onScroll(){
+    const y = window.scrollY;
+    if(y > 60) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = h>0 ? (y/h*100)+'%' : '0%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  // Hamburger
+  document.getElementById('hamburger').addEventListener('click', ()=>{
+    document.body.classList.toggle('menu-open');
+  });
+  document.querySelectorAll('#mobile-menu a').forEach(a=>a.addEventListener('click', ()=>{
+    document.body.classList.remove('menu-open');
+  }));
+
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  if(window.matchMedia('(pointer: fine)').matches){
+    document.addEventListener('mousemove', e=>{
+      cursor.style.left = e.clientX+'px';
+      cursor.style.top = e.clientY+'px';
+    });
+    document.addEventListener('mouseover', e=>{
+      if(e.target.closest('.card, .cta, a, button')) cursor.classList.add('big');
+      else cursor.classList.remove('big');
+    });
+  } else {
+    cursor.style.display='none';
+  }
+
+  // Loader + animations
+  window.addEventListener('load', ()=>{
+    const loader = document.getElementById('loader');
+    const fill = loader.querySelector('.fill');
+    if(reduced || !window.gsap){
+      loader.style.display='none';
+      document.querySelectorAll('.reveal').forEach(el=>{el.style.opacity=1; el.style.transform='none'});
+      return;
+    }
+    const tl = gsap.timeline();
+    tl.to(fill, {width:'100%',duration:.8,ease:'power2.out'})
+      .to(loader, {y:'-100%',duration:.6,ease:'power4.inOut',onComplete:()=>loader.style.display='none'})
+      .from('.hero-label', {y:20,opacity:0,duration:.6}, '-=0.3')
+      .from('.hero-h1-l1', {y:60,opacity:0,duration:.8,ease:'power4.out'}, '-=0.4')
+      .from('.hero-h1-l2', {y:60,opacity:0,duration:.8,ease:'power4.out'}, '-=0.6')
+      .from('.hero-desc',  {y:20,opacity:0,duration:.6}, '-=0.4')
+      .from('.hero-cta',   {y:20,opacity:0,duration:.6}, '-=0.3');
+
+    // Lenis smooth scroll
+    if(window.Lenis){
+      const lenis = new Lenis({duration:1.1, easing:(t)=>Math.min(1, 1.001 - Math.pow(2, -10 * t))});
+      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      lenis.on('scroll', ScrollTrigger.update);
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Reveals
+    document.querySelectorAll('.reveal').forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:.8,ease:'power3.out', scrollTrigger:{trigger:el, start:'top 85%'}});
+    });
+
+    // Card stagger
+    gsap.from('#grid .card', {y:40, opacity:0, scale:.97, duration:.7, stagger:.08, ease:'power3.out',
+      scrollTrigger:{trigger:'#grid', start:'top 80%'}});
+  });
+
+  // Cross-page fade
+  document.querySelectorAll('a[href$=".html"], a[href^="about.html"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const href = a.getAttribute('href');
+      if(!href || href.startsWith('#') || reduced || !window.gsap) return;
+      e.preventDefault();
+      gsap.to('main, footer', {opacity:0, y:-10, duration:.35, onComplete:()=>{ window.location.href = href; }});
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

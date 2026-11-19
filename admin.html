@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de Joselo — Administración</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --admin-bg:#F8F9FA;
+  --admin-sidebar:#FFFFFF;
+  --admin-card:#FFFFFF;
+  --admin-border:#E5E7EB;
+  --admin-border-strong:#D1D5DB;
+  --admin-text:#111827;
+  --admin-muted:#6B7280;
+  --admin-primary:#E4247A;
+  --admin-primary-soft:#FCE4EF;
+  --admin-success:#10B981;
+  --admin-danger:#EF4444;
+  --admin-warning:#F59E0B;
+  --shadow:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg:0 10px 25px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--admin-bg);color:var(--admin-text);font-family:'Inter',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+input,textarea,select{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+::selection{background:var(--admin-primary);color:#fff}
+
+/* Top accent */
+.accent-bar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(135deg,#E4247A,#FA7E1E);z-index:200}
+
+/* Header */
+.app-header{position:sticky;top:3px;z-index:50;background:var(--admin-sidebar);border-bottom:1px solid var(--admin-border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.app-header .title{display:flex;align-items:center;gap:12px}
+.app-header .title .emoji{font-size:22px}
+.app-header .title h1{font-size:17px;font-weight:600;letter-spacing:-.2px}
+.app-header .right{display:flex;align-items:center;gap:16px}
+.app-header .saved-at{font-size:12px;color:var(--admin-muted);display:flex;flex-direction:column;align-items:flex-end;line-height:1.3}
+.app-header .saved-at .lbl{letter-spacing:.5px;text-transform:uppercase;font-size:10px;color:var(--admin-muted)}
+.btn-save{background:var(--admin-success);color:#fff;padding:12px 20px;border-radius:8px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;transition:all .2s;box-shadow:var(--shadow)}
+.btn-save:hover{background:#0ea371;transform:translateY(-1px);box-shadow:var(--shadow-lg)}
+.btn-save:active{transform:translateY(0)}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 3px)}
+.sidebar{background:var(--admin-sidebar);border-right:1px solid var(--admin-border);padding:24px 16px;position:sticky;top:78px;align-self:start;height:calc(100vh - 78px);overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:8px;cursor:pointer;color:var(--admin-text);font-weight:500;font-size:14px;margin-bottom:4px;border-left:3px solid transparent;transition:all .15s;position:relative}
+.nav-item:hover{background:#F3F4F6}
+.nav-item.active{background:var(--admin-primary-soft);border-left-color:var(--admin-primary);color:var(--admin-primary)}
+.nav-item .ico{font-size:18px;width:22px;text-align:center}
+.nav-item .count{margin-left:auto;font-size:11px;color:var(--admin-muted);background:#F3F4F6;padding:2px 8px;border-radius:999px}
+.nav-item.active .count{background:#fff;color:var(--admin-primary)}
+.nav-item .check{color:var(--admin-success);margin-left:4px}
+
+/* Main */
+.main{padding:32px 40px;max-width:1100px;width:100%}
+.section{display:none}
+.section.active{display:block}
+.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.section-head h2{font-size:24px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px}
+.section-head .sub{font-size:14px;color:var(--admin-muted)}
+
+/* Card */
+.card{background:var(--admin-card);border:1px solid var(--admin-border);border-radius:12px;padding:24px;box-shadow:var(--shadow);margin-bottom:20px}
+.card-divider{height:1px;background:var(--admin-border);margin:20px 0}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;font-weight:500;font-size:14px;transition:all .15s;border:1px solid transparent}
+.btn-primary{background:var(--admin-primary);color:#fff}
+.btn-primary:hover{background:#c91e6c;transform:translateY(-1px)}
+.btn-outline{background:transparent;border-color:var(--admin-border-strong);color:var(--admin-text)}
+.btn-outline:hover{background:#F3F4F6}
+.btn-danger{background:transparent;border-color:#FCA5A5;color:var(--admin-danger)}
+.btn-danger:hover{background:#FEE2E2}
+.btn-success{background:var(--admin-success);color:#fff}
+.btn-success:hover{background:#0ea371}
+.btn-small{padding:6px 12px;font-size:13px}
+.btn-link{padding:0;background:transparent;color:var(--admin-primary);font-weight:500}
+.btn-link:hover{text-decoration:underline}
+
+/* Artwork list */
+.art-row{display:grid;grid-template-columns:72px 1fr auto auto auto;gap:16px;align-items:center;padding:14px 16px;border-radius:10px;border:1px solid var(--admin-border);background:#fff;margin-bottom:10px;transition:box-shadow .15s}
+.art-row:hover{box-shadow:var(--shadow-lg)}
+.art-row.drag-over{border-color:var(--admin-primary);background:var(--admin-primary-soft)}
+.art-row.dragging{opacity:.5}
+.art-row .thumb{width:60px;height:60px;border-radius:6px;background:#F3F4F6;overflow:hidden;position:relative;flex-shrink:0}
+.art-row .thumb img{width:100%;height:100%;object-fit:cover}
+.art-row .handle{cursor:grab;color:var(--admin-muted);font-size:18px;padding:0 4px;user-select:none}
+.art-row .handle:active{cursor:grabbing}
+.art-row .info{min-width:0}
+.art-row .title{font-weight:600;font-size:15px;margin-bottom:4px;color:var(--admin-text)}
+.art-row .meta{font-size:12px;color:var(--admin-muted)}
+.cat-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.cat-pill.painting{background:#FCE4EF;color:#B01E65}
+.cat-pill.drawing{background:#E0E9FF;color:#1E4BC7}
+.cat-pill.digital{background:#D4FAF3;color:#0B7F6D}
+.cat-pill.mixed-media{background:#F3E0F9;color:#6E1E89}
+.art-row .price{font-size:13px;color:var(--admin-muted);min-width:110px;text-align:right}
+.art-row .actions{display:flex;gap:6px}
+
+.art-row-header{display:grid;grid-template-columns:72px 1fr auto auto auto;gap:16px;padding:0 16px 10px;font-size:11px;color:var(--admin-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;border-bottom:1px solid var(--admin-border);margin-bottom:10px}
+
+/* Form */
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--admin-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.form-group label .req{color:var(--admin-danger);margin-left:4px}
+.form-group .hint{font-size:12px;color:var(--admin-muted);margin-top:6px;line-height:1.5}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select{
+  width:100%;padding:11px 14px;border:1px solid var(--admin-border-strong);border-radius:8px;font-size:14px;background:#fff;color:var(--admin-text);transition:border-color .15s,box-shadow .15s
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--admin-primary);box-shadow:0 0 0 3px rgba(228,36,122,0.12)}
+.form-group input.error,.form-group textarea.error{border-color:var(--admin-danger)}
+.form-group .err-msg{color:var(--admin-danger);font-size:13px;margin-top:6px;display:none}
+.form-group input.error ~ .err-msg,.form-group textarea.error ~ .err-msg{display:block}
+.form-group textarea{resize:vertical;min-height:100px;font-family:inherit;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.char-count{font-size:11px;color:var(--admin-muted);text-align:right;margin-top:4px}
+.char-count.near-limit{color:var(--admin-warning)}
+.char-count.over-limit{color:var(--admin-danger)}
+
+/* Radio group */
+.radio-group{display:flex;gap:16px;flex-wrap:wrap}
+.radio-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--admin-border-strong);border-radius:8px;cursor:pointer;flex:1;min-width:120px;transition:all .15s}
+.radio-item:hover{border-color:var(--admin-primary)}
+.radio-item input{margin:0}
+.radio-item.selected{border-color:var(--admin-primary);background:var(--admin-primary-soft)}
+
+/* Image file (filename-based) */
+.path-step{background:#F9FAFB;border:1px solid var(--admin-border);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.path-step .step-label{font-size:13px;color:var(--admin-text);margin-bottom:10px;line-height:1.5}
+.path-step .step-label strong{color:var(--admin-primary);font-weight:600}
+.path-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--admin-border);border-radius:8px;padding:10px 14px}
+.path-box .path-icon{font-size:20px}
+.path-box code{font-family:'SF Mono', Consolas, Menlo, monospace;font-size:13px;color:var(--admin-text);flex:1;min-width:0;overflow-x:auto;white-space:nowrap}
+.path-box button{flex-shrink:0}
+.file-status{font-size:12px;margin-top:6px;min-height:16px;font-weight:500}
+.file-status.ok{color:var(--admin-success)}
+.file-status.warn{color:var(--admin-warning)}
+.art-preview-wrap{margin-top:16px;width:200px}
+.art-preview-wrap img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#F3F4F6;border-radius:8px;border:1px solid var(--admin-border)}
+.art-preview-wrap .preview-msg{font-size:11px;color:var(--admin-muted);margin-top:8px;line-height:1.5}
+.bio-preview-wrap{margin-top:16px;width:160px}
+.bio-preview-wrap img{width:100%;aspect-ratio:4/5;object-fit:cover;background:#F3F4F6;border-radius:8px;border:1px solid var(--admin-border)}
+.hint-box{margin-top:14px;padding:12px 14px;background:#FEF9E7;border:1px solid #FDE68A;border-radius:8px;font-size:13px;color:#78350F;line-height:1.5}
+.hint-box strong{color:#78350F}
+
+/* Drawer */
+.drawer-backdrop{position:fixed;inset:0;background:rgba(17,24,39,0.5);backdrop-filter:blur(4px);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
+.drawer-backdrop.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:#fff;z-index:310;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,0.15)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--admin-border);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.drawer-head h3{font-size:18px;font-weight:600}
+.drawer-head .sub{font-size:13px;color:var(--admin-muted);margin-top:2px}
+.drawer-body{padding:28px}
+.drawer-foot{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--admin-border);padding:16px 28px;display:flex;gap:12px;justify-content:flex-end}
+
+/* Confirm dialog */
+.confirm-backdrop{position:fixed;inset:0;background:rgba(17,24,39,0.6);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.confirm-backdrop.open{display:flex}
+.confirm{background:#fff;border-radius:14px;padding:28px;max-width:420px;width:100%;box-shadow:var(--shadow-lg)}
+.confirm h4{font-size:18px;font-weight:600;margin-bottom:8px}
+.confirm p{font-size:14px;color:var(--admin-muted);line-height:1.6;margin-bottom:20px}
+.confirm-actions{display:flex;gap:10px;justify-content:flex-end}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--admin-text);color:#fff;padding:14px 22px;border-radius:10px;box-shadow:var(--shadow-lg);z-index:500;display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;transition:all .25s;font-size:14px;font-weight:500;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast.success{background:var(--admin-success)}
+.toast.error{background:var(--admin-danger)}
+.toast .undo{margin-left:12px;padding:4px 10px;border:1px solid rgba(255,255,255,0.4);border-radius:6px;color:#fff;font-size:12px}
+.toast .undo:hover{background:rgba(255,255,255,0.15)}
+
+/* Empty state */
+.empty{text-align:center;padding:80px 40px;background:#fff;border:1px dashed var(--admin-border-strong);border-radius:12px}
+.empty .ill{font-size:64px;margin-bottom:16px}
+.empty h3{font-size:18px;font-weight:600;margin-bottom:8px}
+.empty p{color:var(--admin-muted);font-size:14px;margin-bottom:20px}
+
+/* Exhibitions list */
+.ex-item{display:grid;grid-template-columns:2fr 2fr 1fr 1fr auto;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--admin-border);border-radius:10px;background:#fff;margin-bottom:8px;font-size:14px}
+.ex-item .ex-name{font-weight:600}
+.ex-item .ex-venue{color:var(--admin-muted);font-size:13px}
+.ex-item .ex-status{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:inline-block;width:fit-content}
+.ex-item .ex-status.past{background:#F3F4F6;color:var(--admin-muted)}
+.ex-item .ex-status.upcoming{background:var(--admin-primary-soft);color:var(--admin-primary)}
+.ex-form{border:1px solid var(--admin-primary);background:var(--admin-primary-soft);padding:16px;border-radius:10px;margin-bottom:10px}
+.ex-form .form-row{grid-template-columns:2fr 2fr 1fr 1fr}
+.ex-form .actions{margin-top:14px;display:flex;gap:10px;justify-content:flex-end}
+
+/* Live preview card inside drawer */
+.preview-card{background:#F6F5ED;border:1px solid var(--admin-border);border-radius:10px;padding:16px;margin-top:20px}
+.preview-card .preview-title{font-size:11px;font-weight:600;color:var(--admin-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.preview-card .preview-img{aspect-ratio:3/4;background:#EDE9D8;border-radius:4px;overflow:hidden;margin-bottom:14px}
+.preview-card .preview-img img{width:100%;height:100%;object-fit:cover}
+.preview-card .preview-cat{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#E4247A;font-weight:600;margin-bottom:6px}
+.preview-card .preview-name{font-family:Georgia,serif;font-size:18px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.preview-card .preview-dim{font-size:12px;color:#999;margin-bottom:6px}
+.preview-card .preview-price{font-size:16px;font-weight:600;background:linear-gradient(135deg,#E4247A,#FA7E1E);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Mobile */
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;border-right:none;border-top:1px solid var(--admin-border);padding:8px;z-index:60;display:flex;gap:4px;flex-direction:row;background:#fff}
+  .sidebar{overflow-x:auto;overflow-y:hidden}
+  .nav-item{flex:1;flex-direction:column;gap:4px;padding:10px 6px;font-size:11px;text-align:center;min-width:72px;border-left:none;border-bottom:3px solid transparent}
+  .nav-item.active{border-left:none;border-bottom-color:var(--admin-primary)}
+  .nav-item .ico{font-size:22px}
+  .nav-item .count,.nav-item .check{display:none}
+  .main{padding:20px 20px 120px}
+  .form-row{grid-template-columns:1fr;gap:0}
+  .image-upload{grid-template-columns:1fr}
+  .image-upload .box{width:100%;height:240px}
+  .art-row{grid-template-columns:60px 1fr auto;gap:12px}
+  .art-row-header,.art-row .price,.art-row .cat-pill-cell{display:none}
+  .ex-item{grid-template-columns:1fr;gap:6px}
+  .ex-form .form-row{grid-template-columns:1fr}
+  .app-header{padding:12px 16px}
+  .app-header .saved-at{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="accent-bar"></div>
+
+<header class="app-header">
+  <div class="title">
+    <span class="emoji">🎨</span>
+    <h1>Panel de Joselo</h1>
+  </div>
+  <div class="right">
+    <div class="saved-at" id="saved-at">
+      <span class="lbl">Último guardado</span>
+      <span id="saved-at-value">—</span>
+    </div>
+    <button class="btn-save" id="btn-save-all" title="Atajo: Ctrl + S">
+      <span>💾</span> Guardar Todo
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <button class="nav-item active" data-section="artworks">
+      <span class="ico">🖼️</span>
+      <span>Mis Obras</span>
+      <span class="count" id="art-count">0</span>
+      <span class="check" id="art-check">✓</span>
+    </button>
+    <button class="nav-item" data-section="bio">
+      <span class="ico">👤</span>
+      <span>Sobre Mí</span>
+      <span class="check" id="bio-check">✓</span>
+    </button>
+    <button class="nav-item" data-section="contact">
+      <span class="ico">📞</span>
+      <span>Contacto</span>
+      <span class="check" id="contact-check">✓</span>
+    </button>
+    <button class="nav-item" id="view-site-btn">
+      <span class="ico">👁️</span>
+      <span>Ver Sitio</span>
+    </button>
+  </aside>
+
+  <main class="main">
+
+    <!-- ARTWORKS -->
+    <section class="section active" data-panel="artworks">
+      <div class="section-head">
+        <div>
+          <h2>Mis Obras</h2>
+          <div class="sub">Haz clic en una obra para editarla, o agrega una nueva. Arrastra para reordenar.</div>
+        </div>
+        <button class="btn btn-primary" id="btn-add-art"><span>+</span> Agregar Nueva Obra</button>
+      </div>
+
+      <div id="artworks-list"></div>
+      <div id="artworks-empty" class="empty" style="display:none">
+        <div class="ill">🎨</div>
+        <h3>¡Tu galería está vacía!</h3>
+        <p>Agrega tu primera obra para empezar a construir tu catálogo.</p>
+        <button class="btn btn-primary" id="btn-add-first">Agregar Mi Primera Obra</button>
+      </div>
+    </section>
+
+    <!-- BIO -->
+    <section class="section" data-panel="bio">
+      <div class="section-head">
+        <div>
+          <h2>Sobre Mí</h2>
+          <div class="sub">Edita la información que aparece en la página «Acerca de».</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="form-group">
+          <label>Mi Foto de Perfil</label>
+
+          <div class="path-step">
+            <div class="step-label"><strong>Paso 1:</strong> Copia tu foto a esta carpeta:</div>
+            <div class="path-box">
+              <span class="path-icon">📁</span>
+              <code id="bio-path-display">sitiov1 / images / artista /</code>
+              <button type="button" class="btn btn-outline btn-small" id="bio-copy-path">📋 Copiar ruta</button>
+            </div>
+          </div>
+
+          <label style="margin-top:14px">Paso 2: Nombre del archivo</label>
+          <input type="text" id="bio-filename" placeholder="ej: retrato.jpg">
+          <div class="hint">Formato recomendado: JPG · 600×800px · menos de 500KB.</div>
+          <div class="file-status" id="bio-filename-status"></div>
+
+          <div class="bio-preview-wrap">
+            <img id="bio-img-preview" alt="Vista previa del retrato">
+          </div>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="form-group">
+          <label>Presentación (el texto principal sobre ti)</label>
+          <textarea id="bio-p1" rows="4" maxlength="600"></textarea>
+          <div class="char-count"><span id="bio-p1-count">0</span> / 600 caracteres</div>
+        </div>
+
+        <div class="form-group">
+          <label>Segundo Párrafo</label>
+          <textarea id="bio-p2" rows="4" maxlength="600"></textarea>
+          <div class="char-count"><span id="bio-p2-count">0</span> / 600 caracteres</div>
+        </div>
+
+        <div class="form-group">
+          <label>Mi Frase Artística (aparece destacada en la página)</label>
+          <textarea id="bio-statement" rows="2" maxlength="200"></textarea>
+          <div class="char-count"><span id="bio-statement-count">0</span> / 200 caracteres</div>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <div class="form-group">
+          <label>Estadísticas</label>
+          <div class="form-row" style="grid-template-columns:repeat(3,1fr)">
+            <div>
+              <label style="font-size:11px">Obras</label>
+              <input type="number" id="stat-works" min="0">
+            </div>
+            <div>
+              <label style="font-size:11px">Exposiciones</label>
+              <input type="number" id="stat-exhibitions" min="0">
+            </div>
+            <div>
+              <label style="font-size:11px">Colecciones</label>
+              <input type="number" id="stat-collections" min="0">
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-success" id="btn-save-bio"><span>💾</span> Guardar Cambios</button>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" data-panel="contact">
+      <div class="section-head">
+        <div>
+          <h2>Mi Información de Contacto</h2>
+          <div class="sub">Esta información aparece en la página de contacto.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="c-email">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="c-phone">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input type="tel" id="c-whatsapp">
+            <div class="hint">Formato: +52 998 XXX XXXX</div>
+          </div>
+          <div class="form-group">
+            <label>Instagram (@usuario)</label>
+            <input type="text" id="c-instagram">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Facebook (usuario o URL corta)</label>
+          <input type="text" id="c-facebook">
+        </div>
+
+        <button class="btn btn-success" id="btn-save-contact"><span>💾</span> Guardar Cambios</button>
+      </div>
+
+      <div class="card">
+        <div class="section-head" style="margin-bottom:16px">
+          <div>
+            <h2 style="font-size:18px">Exposiciones</h2>
+            <div class="sub">Agrega, edita o elimina exposiciones del artista.</div>
+          </div>
+          <button class="btn btn-outline btn-small" id="btn-add-ex"><span>+</span> Agregar Exposición</button>
+        </div>
+        <div id="ex-form-slot"></div>
+        <div id="ex-list"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Artwork drawer -->
+<div class="drawer-backdrop" id="drawer-bd"></div>
+<aside class="drawer" id="art-drawer">
+  <div class="drawer-head">
+    <div>
+      <h3 id="drawer-title">Editar Obra</h3>
+      <div class="sub" id="drawer-sub">Haz clic en cualquier campo para cambiarlo.</div>
+    </div>
+    <button class="btn btn-outline btn-small" id="drawer-close">✕ Cerrar</button>
+  </div>
+  <div class="drawer-body">
+    <div class="form-group">
+      <label>Foto de la Obra</label>
+
+      <div class="path-step">
+        <div class="step-label"><strong>Paso 1:</strong> Copia tu foto a esta carpeta en tu computadora:</div>
+        <div class="path-box">
+          <span class="path-icon">📁</span>
+          <code id="art-path-display">sitiov1 / images / obras /</code>
+          <button type="button" class="btn btn-outline btn-small" id="art-copy-path">📋 Copiar ruta</button>
+        </div>
+      </div>
+
+      <label style="margin-top:14px">Paso 2: Nombre exacto del archivo</label>
+      <input type="text" id="art-filename" placeholder="ej: obra-02.jpg">
+      <div class="hint">Incluye la extensión: .jpg, .png o .webp. Déjalo vacío para usar un placeholder.</div>
+      <div class="file-status" id="art-filename-status"></div>
+
+      <div class="art-preview-wrap">
+        <img id="art-img-preview" alt="Vista previa de la foto">
+        <div class="preview-msg">Si la imagen no aparece, revisa el nombre del archivo y que esté en la carpeta correcta.</div>
+      </div>
+
+      <div class="hint-box">
+        💡 <strong>¿No tienes la foto lista todavía?</strong> Deja el campo vacío — se mostrará un placeholder hasta que agregues la foto.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Título <span class="req">*</span></label>
+      <input type="text" id="art-title" placeholder="Ej: La Dama de Luz">
+      <div class="err-msg">El título es obligatorio.</div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tamaño</label>
+        <input type="text" id="art-size" placeholder="Ej: 120 × 90 cm">
+      </div>
+      <div class="form-group">
+        <label>Técnica (cómo lo hiciste)</label>
+        <input type="text" id="art-tech" placeholder="Ej: Óleo sobre lienzo">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Medio (material principal)</label>
+      <input type="text" id="art-medium" placeholder="Ej: Óleo sobre Lienzo">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Precio</label>
+        <input type="text" id="art-price" placeholder="Ej: $4,500 USD">
+        <div class="hint">Escribe «CONSULTAR» si no quieres mostrar precio.</div>
+      </div>
+      <div class="form-group">
+        <label>Disponibilidad</label>
+        <select id="art-status">
+          <option value="available">● Disponible</option>
+          <option value="sold">● Vendida</option>
+          <option value="inquire">● Consultar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Categoría <span class="req">*</span></label>
+      <div class="radio-group" id="art-category-group">
+        <label class="radio-item"><input type="radio" name="art-cat" value="painting"> Pintura</label>
+        <label class="radio-item"><input type="radio" name="art-cat" value="drawing"> Dibujo</label>
+        <label class="radio-item"><input type="radio" name="art-cat" value="digital"> Arte Digital</label>
+        <label class="radio-item"><input type="radio" name="art-cat" value="mixed-media"> Técnica Mixta</label>
+      </div>
+    </div>
+
+    <div class="preview-card">
+      <div class="preview-title">Vista Rápida — así se verá en tu sitio</div>
+      <div class="preview-img"><img id="preview-img" alt=""></div>
+      <div class="preview-cat" id="preview-cat">PINTURA</div>
+      <div class="preview-name" id="preview-name">Título de la Obra</div>
+      <div class="preview-dim" id="preview-dim">— cm</div>
+      <div class="preview-price" id="preview-price">—</div>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn btn-outline" id="drawer-cancel">Cancelar</button>
+    <button class="btn btn-success" id="drawer-save"><span>💾</span> Guardar Cambios</button>
+  </div>
+</aside>
+
+<!-- Confirm dialog -->
+<div class="confirm-backdrop" id="confirm-bd">
+  <div class="confirm">
+    <h4 id="confirm-title">¿Confirmar?</h4>
+    <p id="confirm-msg">Esta acción no se puede deshacer.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" id="confirm-no">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-yes">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span id="toast-text"></span><button class="undo" id="toast-undo" style="display:none">Deshacer</button></div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  // ========= STATE =========
+  let data = getSiteData();
+  let editingArtworkId = null; // null = new, number = editing existing
+  let editingExhibitionId = null;
+  let pendingDelete = null;
+  let undoTimer = null;
+  let lastDeleted = null;
+
+  // ========= HELPERS =========
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  function toast(msg, kind, withUndo){
+    const t = $('#toast');
+    $('#toast-text').textContent = msg;
+    t.className = 'toast ' + (kind || '') + ' show';
+    const undoBtn = $('#toast-undo');
+    undoBtn.style.display = withUndo ? '' : 'none';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(()=>{ t.classList.remove('show'); }, withUndo ? 5000 : 2200);
+  }
+
+  function confirmAction(title, msg, danger, onYes){
+    $('#confirm-title').textContent = title;
+    $('#confirm-msg').textContent = msg;
+    const yes = $('#confirm-yes');
+    yes.textContent = danger ? 'Eliminar' : 'Confirmar';
+    yes.className = 'btn ' + (danger ? 'btn-danger' : 'btn-primary');
+    pendingDelete = onYes;
+    $('#confirm-bd').classList.add('open');
+  }
+  $('#confirm-no').addEventListener('click', ()=>{ $('#confirm-bd').classList.remove('open'); pendingDelete=null; });
+  $('#confirm-yes').addEventListener('click', ()=>{ if(pendingDelete) pendingDelete(); $('#confirm-bd').classList.remove('open'); pendingDelete=null; });
+  $('#confirm-bd').addEventListener('click', e=>{ if(e.target.id==='confirm-bd'){ $('#confirm-bd').classList.remove('open'); pendingDelete=null; }});
+
+  function saveAll(silent){
+    const ok = saveSiteData(data);
+    if(ok){
+      if(!silent) toast('¡Guardado! Los cambios aparecen en tu sitio.', 'success');
+      updateSavedAt();
+      updateCheckmarks();
+      return true;
+    } else {
+      toast('No hay suficiente espacio. Intenta con una imagen más pequeña (menos de 1MB).', 'error');
+      return false;
+    }
+  }
+
+  function updateSavedAt(){
+    const v = data.lastSaved;
+    if(!v){ $('#saved-at-value').textContent = '—'; return; }
+    const d = new Date(v);
+    const sameDay = new Date().toDateString() === d.toDateString();
+    const time = d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+    $('#saved-at-value').textContent = sameDay ? ('hoy a las ' + time) : d.toLocaleString('es-MX');
+  }
+
+  function updateCheckmarks(){
+    $('#art-count').textContent = (data.artworks||[]).length;
+    $('#art-check').style.display = (data.artworks && data.artworks.length) ? '' : 'none';
+    $('#bio-check').style.display = (data.bio && data.bio.paragraph1) ? '' : 'none';
+    $('#contact-check').style.display = (data.contact && data.contact.email) ? '' : 'none';
+  }
+
+  function readFileAsDataURL(file){
+    return new Promise((resolve, reject)=>{
+      const r = new FileReader();
+      r.onload = ()=>resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  // ========= NAV =========
+  $$('.sidebar .nav-item[data-section]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const name = btn.dataset.section;
+      $$('.nav-item').forEach(n=>n.classList.remove('active'));
+      btn.classList.add('active');
+      $$('.section').forEach(s=>s.classList.toggle('active', s.dataset.panel===name));
+    });
+  });
+  $('#view-site-btn').addEventListener('click', ()=>{
+    saveAll(true);
+    window.open('index.html', '_blank');
+  });
+
+  // ========= ARTWORKS LIST =========
+  function renderArtworks(){
+    const list = $('#artworks-list');
+    const empty = $('#artworks-empty');
+    if(!data.artworks || data.artworks.length === 0){
+      list.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+    const header = `<div class="art-row-header">
+      <span></span><span>Obra</span><span>Categoría</span><span>Precio</span><span>Acciones</span>
+    </div>`;
+    list.innerHTML = header + data.artworks.map((a, i)=>{
+      const img = getArtworkImageSrc(a);
+      const cat = CATEGORY_META[a.category] || CATEGORY_META['painting'];
+      const price = a.status === 'sold' ? 'Vendida' : (a.status === 'inquire' ? 'Consultar' : a.price);
+      return `<div class="art-row" draggable="true" data-id="${a.id}">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="handle" title="Arrastrar para reordenar">⠿</span>
+          <div class="thumb"><img src="${img}" alt=""></div>
+        </div>
+        <div class="info">
+          <div class="title">${a.title}</div>
+          <div class="meta">${a.size || '—'} · ${a.technique || '—'}</div>
+        </div>
+        <span class="cat-pill ${a.category}">${cat.label}</span>
+        <span class="price">${price}</span>
+        <div class="actions">
+          <button class="btn btn-outline btn-small" data-edit="${a.id}">✏ Editar</button>
+          <button class="btn btn-danger btn-small" data-del="${a.id}">🗑</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Attach handlers
+    list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click', e=>{
+      e.stopPropagation(); openArtworkEditor(parseInt(b.dataset.edit, 10));
+    }));
+    list.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click', e=>{
+      e.stopPropagation();
+      const id = parseInt(b.dataset.del, 10);
+      const art = data.artworks.find(x=>x.id===id);
+      confirmAction('¿Eliminar esta obra?', '«' + art.title + '» se eliminará de tu catálogo. Esta acción se puede deshacer por 5 segundos.', true, ()=>{
+        const idx = data.artworks.findIndex(x=>x.id===id);
+        if(idx<0) return;
+        lastDeleted = { item: data.artworks[idx], index: idx };
+        data.artworks.splice(idx, 1);
+        saveAll(true);
+        renderArtworks();
+        const t = $('#toast');
+        $('#toast-text').textContent = 'Obra eliminada.';
+        t.className = 'toast show';
+        $('#toast-undo').style.display = '';
+        clearTimeout(undoTimer);
+        undoTimer = setTimeout(()=>{ t.classList.remove('show'); lastDeleted=null; }, 5000);
+      });
+    }));
+    // Make whole row clickable to edit
+    list.querySelectorAll('.art-row').forEach(row=>{
+      row.addEventListener('click', e=>{
+        if(e.target.closest('button, .handle')) return;
+        openArtworkEditor(parseInt(row.dataset.id, 10));
+      });
+    });
+    // Drag & drop reorder
+    attachDnD(list);
+    updateCheckmarks();
+  }
+
+  function attachDnD(list){
+    let dragId = null;
+    list.querySelectorAll('.art-row').forEach(row=>{
+      row.addEventListener('dragstart', e=>{
+        dragId = parseInt(row.dataset.id, 10);
+        row.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      row.addEventListener('dragend', ()=>{ row.classList.remove('dragging'); list.querySelectorAll('.art-row').forEach(r=>r.classList.remove('drag-over')); });
+      row.addEventListener('dragover', e=>{
+        e.preventDefault();
+        row.classList.add('drag-over');
+      });
+      row.addEventListener('dragleave', ()=>row.classList.remove('drag-over'));
+      row.addEventListener('drop', e=>{
+        e.preventDefault();
+        const dropId = parseInt(row.dataset.id, 10);
+        if(dragId === dropId) return;
+        const from = data.artworks.findIndex(x=>x.id===dragId);
+        const to   = data.artworks.findIndex(x=>x.id===dropId);
+        if(from<0 || to<0) return;
+        const [moved] = data.artworks.splice(from, 1);
+        data.artworks.splice(to, 0, moved);
+        saveAll(true);
+        renderArtworks();
+      });
+    });
+  }
+
+  $('#toast-undo').addEventListener('click', ()=>{
+    if(!lastDeleted) return;
+    data.artworks.splice(lastDeleted.index, 0, lastDeleted.item);
+    saveAll(true);
+    renderArtworks();
+    lastDeleted = null;
+    $('#toast').classList.remove('show');
+    toast('Obra restaurada.', 'success');
+  });
+
+  // ========= ARTWORK EDITOR DRAWER =========
+  function nextId(){
+    const ids = (data.artworks||[]).map(a=>a.id);
+    return ids.length ? Math.max.apply(null, ids) + 1 : 1;
+  }
+
+  function openArtworkEditor(id){
+    editingArtworkId = id;
+    const a = id ? data.artworks.find(x=>x.id===id) : null;
+    const isNew = !a;
+    $('#drawer-title').textContent = isNew ? 'Agregar Nueva Obra' : ('Editando: ' + a.title);
+    $('#drawer-sub').textContent = isNew ? 'Completa los datos para publicarla.' : 'Haz clic en cualquier campo para cambiarlo.';
+
+    const defaults = { title:'', size:'', technique:'', medium:'', price:'', status:'available', category:'painting', image:'placeholder' };
+    const v = Object.assign({}, defaults, a || {});
+
+    $('#art-title').value = v.title;
+    $('#art-size').value = v.size;
+    $('#art-tech').value = v.technique;
+    $('#art-medium').value = v.medium;
+    $('#art-price').value = v.price;
+    $('#art-status').value = v.status;
+    $$('input[name=art-cat]').forEach(r=>{
+      r.checked = (r.value === v.category);
+      r.closest('.radio-item').classList.toggle('selected', r.checked);
+    });
+    $('#art-title').classList.remove('error');
+
+    // Image filename
+    const fname = (!v.image || v.image === 'placeholder') ? '' : v.image;
+    $('#art-filename').value = fname;
+    $('#art-filename').style.borderColor = '';
+    $('#art-filename-status').textContent = '';
+    $('#art-filename-status').className = 'file-status';
+    checkArtFilename(fname, v);
+
+    updatePreview();
+    openDrawer();
+  }
+
+  // Preview-check the filename: show real file if it loads, otherwise fall back to placeholder.
+  function checkArtFilename(filename, artCtx){
+    const preview = $('#art-img-preview');
+    const status  = $('#art-filename-status');
+    const input   = $('#art-filename');
+    const ctx = artCtx || { id: editingArtworkId || 0, image: 'placeholder' };
+    const placeholderSrc = getArtworkImageSrc({ id: ctx.id || 0, image: 'placeholder' });
+    if(!filename){
+      preview.src = placeholderSrc;
+      input.style.borderColor = '';
+      status.textContent = 'Sin foto — se mostrará el placeholder.';
+      status.className = 'file-status';
+      return;
+    }
+    const testSrc = 'images/obras/' + filename;
+    const tester = new Image();
+    tester.onload = ()=>{
+      preview.src = testSrc;
+      input.style.borderColor = 'var(--admin-success)';
+      status.textContent = '✓ Foto encontrada: ' + filename;
+      status.className = 'file-status ok';
+      updatePreview();
+    };
+    tester.onerror = ()=>{
+      preview.src = placeholderSrc;
+      input.style.borderColor = 'var(--admin-warning)';
+      status.textContent = '⚠ No se encontró el archivo en images/obras/ — se usará el placeholder.';
+      status.className = 'file-status warn';
+      updatePreview();
+    };
+    tester.src = testSrc;
+  }
+
+  function openDrawer(){
+    $('#drawer-bd').classList.add('open');
+    $('#art-drawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer(){
+    $('#drawer-bd').classList.remove('open');
+    $('#art-drawer').classList.remove('open');
+    document.body.style.overflow = '';
+    editingArtworkId = null;
+  }
+  $('#drawer-close').addEventListener('click', closeDrawer);
+  $('#drawer-cancel').addEventListener('click', closeDrawer);
+  $('#drawer-bd').addEventListener('click', closeDrawer);
+
+  // Filename input — debounced live preview check
+  let artFilenameTimer = null;
+  $('#art-filename').addEventListener('input', ()=>{
+    clearTimeout(artFilenameTimer);
+    const v = $('#art-filename').value.trim();
+    artFilenameTimer = setTimeout(()=>checkArtFilename(v), 400);
+  });
+
+  // Copy path to clipboard
+  function copyFolderPath(subfolder, btn){
+    const base = window.location.href.replace(/[^/\\]+\.html(\?.*)?(#.*)?$/, '');
+    let folderPath = base + 'images/' + subfolder + '/';
+    if(folderPath.startsWith('file:///')){
+      folderPath = folderPath.replace('file:///', '').replace(/\//g, '\\');
+    }
+    const label = btn.textContent;
+    const done = ()=>{ btn.textContent = '✓ ¡Copiado!'; setTimeout(()=>btn.textContent = label, 2000); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(folderPath).then(done).catch(()=>{
+        window.prompt('Copia esta ruta (Ctrl+C):', folderPath);
+        done();
+      });
+    } else {
+      window.prompt('Copia esta ruta (Ctrl+C):', folderPath);
+      done();
+    }
+  }
+  $('#art-copy-path').addEventListener('click', ()=>copyFolderPath('obras', $('#art-copy-path')));
+  $('#bio-copy-path').addEventListener('click', ()=>copyFolderPath('artista', $('#bio-copy-path')));
+
+  // Radio selected styling
+  $('#art-category-group').addEventListener('change', e=>{
+    $$('input[name=art-cat]').forEach(r=>r.closest('.radio-item').classList.toggle('selected', r.checked));
+    updatePreview();
+  });
+
+  // Live preview
+  ['art-title','art-size','art-price','art-status'].forEach(id=>{
+    $('#'+id).addEventListener('input', updatePreview);
+    $('#'+id).addEventListener('change', updatePreview);
+  });
+
+  function updatePreview(){
+    const title = $('#art-title').value || 'Título de la Obra';
+    const size = $('#art-size').value || '— cm';
+    const price = $('#art-price').value || '—';
+    const status = $('#art-status').value;
+    const cat = ($$('input[name=art-cat]:checked')[0] || {}).value || 'painting';
+    const meta = CATEGORY_META[cat];
+    $('#preview-name').textContent = title;
+    $('#preview-dim').textContent = size;
+    $('#preview-price').textContent = price;
+    $('#preview-price').style.background = meta.gradient;
+    $('#preview-price').style.webkitBackgroundClip = 'text';
+    $('#preview-price').style.backgroundClip = 'text';
+    $('#preview-cat').textContent = meta.label.toUpperCase();
+    $('#preview-cat').style.color = meta.color;
+    const img = $('#art-img-preview');
+    $('#preview-img').src = img.src;
+    if(status === 'sold'){
+      $('#preview-price').style.background = 'none';
+      $('#preview-price').style.color = '#E8451C';
+      $('#preview-price').style.textDecoration = 'line-through';
+    } else if(status === 'inquire'){
+      $('#preview-price').style.background = 'none';
+      $('#preview-price').style.color = '#9B2FAA';
+      $('#preview-price').style.textDecoration = 'none';
+    } else {
+      $('#preview-price').style.textDecoration = 'none';
+    }
+  }
+
+  // Save drawer
+  $('#drawer-save').addEventListener('click', ()=>{
+    const title = $('#art-title').value.trim();
+    if(!title){
+      $('#art-title').classList.add('error');
+      $('#art-title').focus();
+      return;
+    }
+    const checked = $$('input[name=art-cat]:checked')[0];
+    if(!checked){ toast('Elige una categoría.', 'error'); return; }
+    const filename = $('#art-filename').value.trim();
+
+    const rec = {
+      id: editingArtworkId || nextId(),
+      title,
+      size: $('#art-size').value.trim(),
+      technique: $('#art-tech').value.trim(),
+      medium: $('#art-medium').value.trim(),
+      price: $('#art-price').value.trim() || 'CONSULTAR PRECIO',
+      status: $('#art-status').value,
+      category: checked.value,
+      image: filename || 'placeholder'
+    };
+
+    if(editingArtworkId){
+      const idx = data.artworks.findIndex(x=>x.id===editingArtworkId);
+      if(idx>=0) data.artworks[idx] = rec;
+    } else {
+      data.artworks.push(rec);
+    }
+    if(saveAll()){
+      renderArtworks();
+      closeDrawer();
+    }
+  });
+
+  $('#btn-add-art').addEventListener('click', ()=>openArtworkEditor(null));
+  $('#btn-add-first').addEventListener('click', ()=>openArtworkEditor(null));
+
+  // ========= BIO =========
+  function bindCount(id, countId){
+    const el = $('#'+id), c = $('#'+countId);
+    const update = ()=>{
+      const n = el.value.length;
+      c.textContent = n;
+      const max = parseInt(el.getAttribute('maxlength'), 10) || 0;
+      c.parentNode.classList.toggle('near-limit', max && n >= max * 0.9);
+      c.parentNode.classList.toggle('over-limit', max && n >= max);
+    };
+    el.addEventListener('input', update); update();
+  }
+  function loadBio(){
+    const b = data.bio || {};
+    $('#bio-p1').value = b.paragraph1 || '';
+    $('#bio-p2').value = b.paragraph2 || '';
+    $('#bio-statement').value = b.statement || '';
+    $('#stat-works').value = (b.stats||{}).works || 0;
+    $('#stat-exhibitions').value = (b.stats||{}).exhibitions || 0;
+    $('#stat-collections').value = (b.stats||{}).collections || 0;
+    $('#bio-filename').value = b.portraitImage || '';
+    checkBioFilename($('#bio-filename').value.trim());
+    bindCount('bio-p1','bio-p1-count');
+    bindCount('bio-p2','bio-p2-count');
+    bindCount('bio-statement','bio-statement-count');
+  }
+
+  function checkBioFilename(filename){
+    const preview = $('#bio-img-preview');
+    const status  = $('#bio-filename-status');
+    const input   = $('#bio-filename');
+    if(!filename){
+      preview.src = portraitPlaceholder();
+      input.style.borderColor = '';
+      status.textContent = 'Sin foto — se mostrará el placeholder.';
+      status.className = 'file-status';
+      return;
+    }
+    const testSrc = 'images/artista/' + filename;
+    const tester = new Image();
+    tester.onload = ()=>{
+      preview.src = testSrc;
+      input.style.borderColor = 'var(--admin-success)';
+      status.textContent = '✓ Foto encontrada: ' + filename;
+      status.className = 'file-status ok';
+    };
+    tester.onerror = ()=>{
+      preview.src = portraitPlaceholder();
+      input.style.borderColor = 'var(--admin-warning)';
+      status.textContent = '⚠ No se encontró el archivo en images/artista/ — se usará el placeholder.';
+      status.className = 'file-status warn';
+    };
+    tester.src = testSrc;
+  }
+
+  let bioFilenameTimer = null;
+  $('#bio-filename').addEventListener('input', ()=>{
+    clearTimeout(bioFilenameTimer);
+    const v = $('#bio-filename').value.trim();
+    bioFilenameTimer = setTimeout(()=>checkBioFilename(v), 400);
+  });
+
+  $('#btn-save-bio').addEventListener('click', ()=>{
+    const filename = $('#bio-filename').value.trim();
+    data.bio = {
+      paragraph1: $('#bio-p1').value.trim(),
+      paragraph2: $('#bio-p2').value.trim(),
+      statement:  $('#bio-statement').value.trim(),
+      portraitImage: filename || null,
+      stats: {
+        works: parseInt($('#stat-works').value, 10) || 0,
+        exhibitions: parseInt($('#stat-exhibitions').value, 10) || 0,
+        collections: parseInt($('#stat-collections').value, 10) || 0
+      }
+    };
+    saveAll();
+  });
+
+  // ========= CONTACT =========
+  function loadContact(){
+    const c = data.contact || {};
+    $('#c-email').value = c.email || '';
+    $('#c-phone').value = c.phone || '';
+    $('#c-whatsapp').value = c.whatsapp || '';
+    $('#c-instagram').value = c.instagram || '';
+    $('#c-facebook').value = c.facebook || '';
+  }
+  $('#btn-save-contact').addEventListener('click', ()=>{
+    data.contact = {
+      email: $('#c-email').value.trim(),
+      phone: $('#c-phone').value.trim(),
+      whatsapp: $('#c-whatsapp').value.trim(),
+      instagram: $('#c-instagram').value.trim(),
+      facebook: $('#c-facebook').value.trim()
+    };
+    saveAll();
+  });
+
+  // ========= EXHIBITIONS =========
+  function nextExId(){
+    const ids = (data.exhibitions||[]).map(x=>x.id);
+    return ids.length ? Math.max.apply(null, ids) + 1 : 1;
+  }
+
+  function renderExhibitions(){
+    const list = $('#ex-list');
+    if(!data.exhibitions || !data.exhibitions.length){
+      list.innerHTML = '<p style="color:var(--admin-muted);font-size:14px;padding:12px 0">No hay exposiciones. Haz clic en «Agregar Exposición» para empezar.</p>';
+      return;
+    }
+    list.innerHTML = data.exhibitions.map(e=>`
+      <div class="ex-item" data-id="${e.id}">
+        <span class="ex-name">${e.name}</span>
+        <span class="ex-venue">${e.venue}</span>
+        <span>${e.year}</span>
+        <span><span class="ex-status ${e.status}">${e.status==='upcoming'?'Próxima':'Pasada'}</span></span>
+        <span style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-small" data-ex-edit="${e.id}">✏</button>
+          <button class="btn btn-danger btn-small" data-ex-del="${e.id}">🗑</button>
+        </span>
+      </div>`).join('');
+    list.querySelectorAll('[data-ex-edit]').forEach(b=>b.addEventListener('click', ()=>openExForm(parseInt(b.dataset.exEdit,10))));
+    list.querySelectorAll('[data-ex-del]').forEach(b=>b.addEventListener('click', ()=>{
+      const id = parseInt(b.dataset.exDel, 10);
+      const ex = data.exhibitions.find(x=>x.id===id);
+      confirmAction('¿Eliminar exposición?', '«' + ex.name + '» se eliminará permanentemente.', true, ()=>{
+        data.exhibitions = data.exhibitions.filter(x=>x.id!==id);
+        saveAll(true);
+        renderExhibitions();
+        toast('Exposición eliminada.', 'success');
+      });
+    }));
+  }
+
+  function openExForm(id){
+    editingExhibitionId = id;
+    const ex = id ? data.exhibitions.find(x=>x.id===id) : { name:'', venue:'', year:new Date().getFullYear(), status:'past' };
+    $('#ex-form-slot').innerHTML = `
+      <div class="ex-form">
+        <div class="form-row">
+          <div class="form-group" style="margin-bottom:12px"><label>Nombre</label><input type="text" id="ex-name" value="${(ex.name||'').replace(/"/g,'&quot;')}"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>Lugar</label><input type="text" id="ex-venue" value="${(ex.venue||'').replace(/"/g,'&quot;')}"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>Año</label><input type="text" id="ex-year" value="${ex.year||''}"></div>
+          <div class="form-group" style="margin-bottom:12px"><label>Estado</label>
+            <select id="ex-status">
+              <option value="past" ${ex.status==='past'?'selected':''}>Pasada</option>
+              <option value="upcoming" ${ex.status==='upcoming'?'selected':''}>Próxima</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-small" id="ex-cancel">Cancelar</button>
+          <button class="btn btn-success btn-small" id="ex-save">Guardar</button>
+        </div>
+      </div>`;
+    $('#ex-cancel').addEventListener('click', ()=>{ $('#ex-form-slot').innerHTML=''; editingExhibitionId=null; });
+    $('#ex-save').addEventListener('click', ()=>{
+      const name = $('#ex-name').value.trim();
+      if(!name){ $('#ex-name').classList.add('error'); return; }
+      const rec = {
+        id: editingExhibitionId || nextExId(),
+        name,
+        venue: $('#ex-venue').value.trim(),
+        year: $('#ex-year').value.trim(),
+        status: $('#ex-status').value
+      };
+      if(editingExhibitionId){
+        const idx = data.exhibitions.findIndex(x=>x.id===editingExhibitionId);
+        if(idx>=0) data.exhibitions[idx] = rec;
+      } else {
+        data.exhibitions.push(rec);
+      }
+      saveAll(true);
+      $('#ex-form-slot').innerHTML='';
+      editingExhibitionId=null;
+      renderExhibitions();
+      toast('Exposición guardada.', 'success');
+    });
+  }
+
+  $('#btn-add-ex').addEventListener('click', ()=>openExForm(null));
+
+  // ========= SAVE ALL BUTTON + KEYBOARD =========
+  $('#btn-save-all').addEventListener('click', ()=>saveAll());
+  document.addEventListener('keydown', e=>{
+    if((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')){
+      e.preventDefault();
+      saveAll();
+    }
+    if(e.key === 'Escape'){
+      if($('#art-drawer').classList.contains('open')) closeDrawer();
+    }
+  });
+
+  // ========= INIT =========
+  renderArtworks();
+  loadBio();
+  loadContact();
+  renderExhibitions();
+  updateSavedAt();
+  updateCheckmarks();
+})();
+</script>
+</body>
+</html>

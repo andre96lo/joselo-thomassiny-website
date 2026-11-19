@@ -1,0 +1,43 @@
+INSTRUCCIONES PARA FOTOS DE OBRAS
+====================================
+
+Esta carpeta NO es donde van las fotos.
+
+
+Las fotos de las OBRAS van en:
+   sitiov1 / images / obras
+
+La foto del ARTISTA va en:
+   sitiov1 / images / artista
+
+
+NOMBRES DE ARCHIVO RECOMENDADOS
+---------------------------------
+
+Para obras:
+   obra-01.jpg, obra-02.jpg, etc.
+
+   O nombres descriptivos:
+   la-dama-de-luz.jpg
+   color-in-life.jpg
+
+Para el retrato:
+   retrato.jpg
+
+
+TAMANO RECOMENDADO
+-------------------
+
+- Obras: 800x1000 px, formato JPG, menos de 1 MB
+- Retrato: 600x800 px, formato JPG, menos de 500 KB
+
+Comprimir fotos gratis: squoosh.app
+
+
+PASOS
+-----
+
+1. Comprime tu foto (si pesa mas de 1 MB).
+2. Copiala a la carpeta correcta (obras o artista).
+3. Abre admin.html y escribe el nombre exacto en el panel.
+4. Guarda los cambios.
