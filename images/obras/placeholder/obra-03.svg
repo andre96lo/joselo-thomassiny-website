@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800">
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#E8451C"/>
@@ -14,7 +14,4 @@
   <circle cx="200" cy="200" r="4" fill="#FFCC00" opacity="0.8"/>
   <circle cx="410" cy="150" r="3" fill="#FFCC00" opacity="0.6"/>
   <circle cx="500" cy="500" r="5" fill="#E4247A" opacity="0.7"/>
-  <rect x="0" y="720" width="600" height="80" fill="url(#g)" opacity="0.95"/>
-  <text x="24" y="762" font-family="'Big Shoulders Display', sans-serif" font-size="22" font-weight="700" fill="white" letter-spacing="1">LABIOS EN LA NOCHE</text>
-  <text x="24" y="785" font-family="sans-serif" font-size="12" fill="rgba(255,255,255,0.75)">Técnica Mixta</text>
 </svg>
