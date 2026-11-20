@@ -234,10 +234,110 @@ img{display:block;max-width:100%}
   .app-header .saved-at{display:none}
 }
 </style>
+
+
+
+<script>
+  // === ADMIN AUTHENTICATION ===
+  const ADMIN_PASSWORD_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // SHA-256 of 'joselo2024'
+  
+  async function hashPassword(password) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  
+  async function checkAuth() {
+    if (sessionStorage.getItem('joselo_admin_authenticated') === 'true') {
+      document.getElementById('admin-login-screen').style.display = 'none';
+      document.getElementById('admin-app').style.display = 'block';
+    }
+    // If not authenticated, login screen stays visible (default)
+  }
+  
+  async function attemptLogin() {
+    const lockout = sessionStorage.getItem('admin_lockout_until');
+    if (lockout && Date.now() < parseInt(lockout)) {
+      const mins = Math.ceil((parseInt(lockout) - Date.now()) / 60000);
+      showLoginError('Panel bloqueado. Espera ' + mins + ' minuto(s).');
+      return;
+    }
+    const hash = await hashPassword(document.getElementById('admin-password-input').value);
+    if (hash === ADMIN_PASSWORD_HASH) {
+      sessionStorage.setItem('joselo_admin_authenticated', 'true');
+      sessionStorage.removeItem('admin_failed_attempts');
+      sessionStorage.removeItem('admin_lockout_until');
+      document.getElementById('admin-login-screen').style.display = 'none';
+      document.getElementById('admin-app').style.display = 'block';
+    } else {
+      const attempts = parseInt(sessionStorage.getItem('admin_failed_attempts') || '0') + 1;
+      sessionStorage.setItem('admin_failed_attempts', attempts);
+      if (attempts >= 5) {
+        sessionStorage.setItem('admin_lockout_until', Date.now() + 15*60*1000);
+        showLoginError('Demasiados intentos. Bloqueado por 15 minutos.');
+      } else {
+        showLoginError('Contraseña incorrecta. ' + (5-attempts) + ' intento(s) restante(s).');
+      }
+    }
+  }
+  
+  function showLoginError(msg) {
+    const el = document.getElementById('login-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  
+  function logout() {
+    sessionStorage.removeItem('joselo_admin_authenticated');
+    location.reload();
+  }
+  
+  // Enter key support
+  document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    document.getElementById('admin-password-input')
+      .addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+  });
+  </script>
+
+
+
 </head>
 <body>
 
 <div class="accent-bar"></div>
+
+<!-- LOGIN SCREEN — covers everything until authenticated -->
+<div id="admin-login-screen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:var(--admin-bg);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+">
+  <div style="
+    background:#fff;border:1px solid var(--admin-border);
+    border-radius:16px;padding:40px 36px;max-width:380px;width:100%;
+    box-shadow:var(--shadow-lg);text-align:center;
+  ">
+    <div style="font-size:48px;margin-bottom:16px">🎨</div>
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:6px">Panel de Joselo Thomassiny</h2>
+    <p style="font-size:14px;color:var(--admin-muted);margin-bottom:28px">Ingresa tu contraseña para acceder al panel</p>
+    <input id="admin-password-input" type="password" placeholder="Contraseña"
+      style="width:100%;padding:12px 14px;border:1px solid var(--admin-border-strong);
+      border-radius:8px;font-size:15px;margin-bottom:12px;text-align:center;letter-spacing:3px">
+    <button onclick="attemptLogin()" style="
+      width:100%;padding:13px;background:var(--admin-primary);color:#fff;
+      border-radius:8px;font-weight:600;font-size:15px;cursor:pointer;border:none;
+      transition:background .2s;
+    ">Entrar al Panel</button>
+    <div id="login-error" style="
+      display:none;margin-top:14px;color:var(--admin-danger);
+      font-size:13px;font-weight:500;
+    "></div>
+  </div>
+</div>
+
+<!-- ADMIN APP — hidden until authenticated -->
+<div id="admin-app" style="display:none">
+
 
 <div class="temp-notice" role="note">
   <span class="tn-icon">⚠️</span>
@@ -256,6 +356,9 @@ img{display:block;max-width:100%}
     </div>
     <button class="btn-save" id="btn-save-all" title="Atajo: Ctrl + S">
       <span>💾</span> Guardar Todo
+    </button>
+    <button onclick="logout()" class="btn btn-outline btn-small" title="Cerrar sesión" style="color:var(--admin-muted)">
+      🔒 Salir
     </button>
   </div>
 </header>
@@ -1154,5 +1257,6 @@ img{display:block;max-width:100%}
   updateCheckmarks();
 })();
 </script>
+</div><!-- end #admin-app -->
 </body>
 </html>
