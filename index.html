@@ -491,7 +491,14 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
   }
 
   // Loader + animations
+  // Safety timeout: if window.load never fires (CDN script hung), hide the loader anyway after 4s
+  const _loaderSafety = setTimeout(()=>{
+    const l = document.getElementById('loader');
+    if(l) l.style.display = 'none';
+  }, 4000);
+
   window.addEventListener('load', ()=>{
+    clearTimeout(_loaderSafety);
     const loader = document.getElementById('loader');
     const fill = loader.querySelector('.fill');
     if(reduced || !window.gsap){
