@@ -251,14 +251,15 @@ img{display:block;max-width:100%}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Create client and store as global var (not const) so data.js and all scripts can access it
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
 
 
 
 <script>
   // === ADMIN AUTHENTICATION ===
-  const ADMIN_PASSWORD_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // SHA-256 of 'joselo2024'
+  const ADMIN_PASSWORD_HASH = '1d017f3f4157763d1402c4afa68fc73e603f5c057fd4fa6b56b70462e570713c'; // SHA-256 of 'joselo2024'
   
   async function hashPassword(password) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
