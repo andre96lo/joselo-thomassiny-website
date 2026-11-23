@@ -36,30 +36,182 @@ function cloneDefault() {
   return JSON.parse(JSON.stringify(DEFAULT_DATA));
 }
 
-// Load data: check localStorage first, fall back to defaults
-function getSiteData() {
+
+// Map Supabase snake_case fields to the local camelCase used throughout the site
+function normalizeArtwork(row) {
+  return {
+    id: row.id,
+    title: row.title || '',
+    technique: row.technique || '',
+    medium: row.medium || '',
+    size: row.size || '',
+    price: row.price || '',
+    status: row.status || 'available',
+    category: row.category || 'painting',
+    image: row.image_url || 'placeholder',
+    sort_order: row.sort_order
+  };
+}
+function normalizeBio(row) {
+  if (!row) return cloneDefault().bio;
+  return {
+    paragraph1: row.paragraph1 || '',
+    paragraph2: row.paragraph2 || '',
+    statement: row.statement || '',
+    portraitImage: row.portrait_url || null,
+    stats: {
+      works: row.stat_works || 0,
+      exhibitions: row.stat_exhibitions || 0,
+      collections: row.stat_collections || 0
+    }
+  };
+}
+function normalizeContact(row) {
+  if (!row) return cloneDefault().contact;
+  return {
+    email: row.email || '',
+    phone: row.phone || '',
+    whatsapp: row.whatsapp || '',
+    instagram: row.instagram || '',
+    facebook: row.facebook || ''
+  };
+}
+function normalizeExhibition(row) {
+  return {
+    id: row.id,
+    name: row.name || '',
+    venue: row.venue || '',
+    year: row.year || '',
+    status: row.status || 'past',
+    sort_order: row.sort_order
+  };
+}
+
+// Fetch all site data from Supabase (normalized to the local shape)
+async function fetchSiteData() {
   try {
-    const saved = localStorage.getItem(SITE_DATA_KEY);
-    if (!saved) return cloneDefault();
-    const parsed = JSON.parse(saved);
-    // Merge defaults so any newly-added top-level keys are present
-    return Object.assign(cloneDefault(), parsed);
+    const [artworksRes, bioRes, contactRes, exhibitionsRes] = await Promise.all([
+      supabase.from('artworks').select('*').order('sort_order'),
+      supabase.from('bio').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('contact').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('exhibitions').select('*').order('sort_order')
+    ]);
+
+    return {
+      artworks:    (artworksRes.data    || []).map(normalizeArtwork),
+      bio:         normalizeBio(bioRes.data),
+      contact:     normalizeContact(contactRes.data),
+      exhibitions: (exhibitionsRes.data || []).map(normalizeExhibition),
+      lastSaved:   null
+    };
   } catch (e) {
+    console.warn('Supabase unavailable, using defaults:', e);
     return cloneDefault();
   }
 }
 
-// Save data to localStorage. Returns true on success, false if storage is full.
-function saveSiteData(data) {
+// Legacy shim — admin code still calls getSiteData() synchronously in a few spots.
+// It will be overwritten with the real async-loaded data at init.
+function getSiteData() { return cloneDefault(); }
+
+// Persist the admin's in-memory `data` object to Supabase.
+// Returns true on success, false on any failure (caller shows a toast).
+async function saveSiteDataToSupabase(data) {
   try {
-    data.lastSaved = new Date().toISOString();
-    localStorage.setItem(SITE_DATA_KEY, JSON.stringify(data));
+    const now = new Date().toISOString();
+
+    // 1) Bio (single row, id=1)
+    {
+      const b = data.bio || {};
+      const stats = b.stats || {};
+      const { error } = await supabase.from('bio').upsert({
+        id: 1,
+        paragraph1:        b.paragraph1 || '',
+        paragraph2:        b.paragraph2 || '',
+        statement:         b.statement  || '',
+        portrait_url:      b.portraitImage || null,
+        stat_works:        stats.works       || 0,
+        stat_exhibitions:  stats.exhibitions || 0,
+        stat_collections:  stats.collections || 0,
+        updated_at:        now
+      });
+      if (error) throw error;
+    }
+
+    // 2) Contact (single row, id=1)
+    {
+      const c = data.contact || {};
+      const { error } = await supabase.from('contact').upsert({
+        id: 1,
+        email:     c.email     || '',
+        phone:     c.phone     || '',
+        whatsapp:  c.whatsapp  || '',
+        instagram: c.instagram || '',
+        facebook:  c.facebook  || '',
+        updated_at: now
+      });
+      if (error) throw error;
+    }
+
+    // 3) Artworks — delete rows removed locally, upsert the rest with array index as sort_order
+    {
+      const localIds = (data.artworks || []).map(a => a.id).filter(Boolean);
+      const { data: remote, error: selErr } = await supabase.from('artworks').select('id');
+      if (selErr) throw selErr;
+      const toDelete = (remote || []).map(r => r.id).filter(id => !localIds.includes(id));
+      if (toDelete.length) {
+        const { error: delErr } = await supabase.from('artworks').delete().in('id', toDelete);
+        if (delErr) throw delErr;
+      }
+      const rows = (data.artworks || []).map((a, i) => ({
+        id:         a.id,
+        title:      a.title || '',
+        technique:  a.technique || '',
+        medium:     a.medium || '',
+        size:       a.size || '',
+        price:      a.price || '',
+        status:     a.status || 'available',
+        category:   a.category || 'painting',
+        image_url:  (!a.image || a.image === 'placeholder') ? null : a.image,
+        sort_order: i,
+        updated_at: now
+      }));
+      if (rows.length) {
+        const { error } = await supabase.from('artworks').upsert(rows);
+        if (error) throw error;
+      }
+    }
+
+    // 4) Exhibitions — same pattern
+    {
+      const localIds = (data.exhibitions || []).map(a => a.id).filter(Boolean);
+      const { data: remote, error: selErr } = await supabase.from('exhibitions').select('id');
+      if (selErr) throw selErr;
+      const toDelete = (remote || []).map(r => r.id).filter(id => !localIds.includes(id));
+      if (toDelete.length) {
+        const { error: delErr } = await supabase.from('exhibitions').delete().in('id', toDelete);
+        if (delErr) throw delErr;
+      }
+      const rows = (data.exhibitions || []).map((e, i) => ({
+        id:         e.id,
+        name:       e.name  || '',
+        venue:      e.venue || '',
+        year:       e.year  || '',
+        status:     e.status || 'past',
+        sort_order: i
+      }));
+      if (rows.length) {
+        const { error } = await supabase.from('exhibitions').upsert(rows);
+        if (error) throw error;
+      }
+    }
+
     return true;
   } catch (e) {
+    console.error('Supabase save failed:', e);
     return false;
   }
 }
-
 // Reset to defaults (used by the admin panel's "restaurar" feature, if added)
 function resetSiteData() {
   try {
@@ -91,6 +243,9 @@ function getArtworkImageSrc(artwork) {
     const index = String(id).padStart(2, '0');
     return 'images/obras/placeholder/obra-' + index + '.svg';
   }
+  // Full URL (Supabase Storage, etc.) — use as-is
+  if (/^https?:\/\//i.test(val)) return val;
+  // Bare filename — look in local images folder
   return 'images/obras/' + val;
 }
 
@@ -98,7 +253,9 @@ function getArtworkImageSrc(artwork) {
 // the caller should fall back to the inline SVG (portraitPlaceholder()).
 function getPortraitImageSrc(bio) {
   if (!bio || !bio.portraitImage) return null;
-  return 'images/artista/' + bio.portraitImage;
+  const val = bio.portraitImage;
+  if (/^https?:\/\//i.test(val)) return val;
+  return 'images/artista/' + val;
 }
 
 // SVG placeholder generator — kept for legacy fallbacks. The site now

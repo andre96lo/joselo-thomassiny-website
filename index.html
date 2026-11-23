@@ -323,7 +323,7 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
   </div>
 </div>
 
-
+ <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
@@ -336,11 +336,11 @@ footer .foot{border-top:1px solid rgba(246,245,237,0.1);padding-top:30px;display
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 <script>
-(function(){
+(async function(){
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Public page: always read from DEFAULT_DATA (the file). localStorage is
-  // ignored so content is identical across every domain (Vercel, custom, etc.).
-  const DATA = DEFAULT_DATA;
+  // Public page: read live content from Supabase so every domain shows the same
+  // thing. If Supabase is unreachable, fall back to DEFAULT_DATA.
+  const DATA = await fetchSiteData();
 
   // Year
   document.getElementById('year').textContent = new Date().getFullYear();

@@ -151,13 +151,24 @@ img{display:block;max-width:100%}
 .file-status{font-size:12px;margin-top:6px;min-height:16px;font-weight:500}
 .file-status.ok{color:var(--admin-success)}
 .file-status.warn{color:var(--admin-warning)}
-.art-preview-wrap{margin-top:16px;width:200px}
-.art-preview-wrap img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#F3F4F6;border-radius:8px;border:1px solid var(--admin-border)}
+.art-preview-wrap{position:relative;width:200px}
+.art-preview-wrap img{width:100%;aspect-ratio:3/4;object-fit:cover;background:#F3F4F6;border-radius:8px;border:1px solid var(--admin-border);display:block}
 .art-preview-wrap .preview-msg{font-size:11px;color:var(--admin-muted);margin-top:8px;line-height:1.5}
-.bio-preview-wrap{margin-top:16px;width:160px}
-.bio-preview-wrap img{width:100%;aspect-ratio:4/5;object-fit:cover;background:#F3F4F6;border-radius:8px;border:1px solid var(--admin-border)}
+.bio-preview-wrap{position:relative;width:160px}
+.bio-preview-wrap img{width:100%;aspect-ratio:4/5;object-fit:cover;background:#F3F4F6;border-radius:8px;border:1px solid var(--admin-border);display:block}
 .hint-box{margin-top:14px;padding:12px 14px;background:#FEF9E7;border:1px solid #FDE68A;border-radius:8px;font-size:13px;color:#78350F;line-height:1.5}
 .hint-box strong{color:#78350F}
+
+/* File upload UI */
+.upload-wrap{display:flex;flex-direction:column;gap:12px}
+.upload-wrap .art-preview-wrap,
+.upload-wrap .bio-preview-wrap{margin-top:0}
+.upload-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.upload-overlay{position:absolute;inset:0;background:rgba(255,255,255,0.94);border-radius:8px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:2}
+.upload-overlay.active{display:flex}
+.upload-spinner{width:28px;height:28px;border:3px solid #E5E7EB;border-top-color:var(--admin-primary);border-radius:50%;animation:upload-spin 0.8s linear infinite}
+@keyframes upload-spin{to{transform:rotate(360deg)}}
+.upload-text{font-size:12px;font-weight:500;color:var(--admin-text);letter-spacing:0.2px}
 
 /* Drawer */
 .drawer-backdrop{position:fixed;inset:0;background:rgba(17,24,39,0.5);backdrop-filter:blur(4px);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -235,6 +246,14 @@ img{display:block;max-width:100%}
 }
 </style>
 
+<!-- Supabase -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+
 
 
 <script>
@@ -253,7 +272,6 @@ img{display:block;max-width:100%}
     }
     // If not authenticated, login screen stays visible (default)
   }
-  
   async function attemptLogin() {
     const lockout = sessionStorage.getItem('admin_lockout_until');
     if (lockout && Date.now() < parseInt(lockout)) {
@@ -387,7 +405,7 @@ img{display:block;max-width:100%}
       <span>Ver Sitio</span>
     </button>
   </aside>
-
+  
   <main class="main">
 
     <!-- ARTWORKS -->
@@ -422,22 +440,24 @@ img{display:block;max-width:100%}
         <div class="form-group">
           <label>Mi Foto de Perfil</label>
 
-          <div class="path-step">
-            <div class="step-label"><strong>Paso 1:</strong> Copia tu foto a esta carpeta:</div>
-            <div class="path-box">
-              <span class="path-icon">📁</span>
-              <code id="bio-path-display">sitiov1 / images / artista /</code>
-              <button type="button" class="btn btn-outline btn-small" id="bio-copy-path">📋 Copiar ruta</button>
+          <div class="upload-wrap">
+            <div class="bio-preview-wrap">
+              <img id="bio-img-preview" alt="Vista previa del retrato">
+              <div class="upload-overlay" id="bio-upload-overlay">
+                <div class="upload-spinner"></div>
+                <div class="upload-text">Subiendo foto…</div>
+              </div>
             </div>
-          </div>
 
-          <label style="margin-top:14px">Paso 2: Nombre del archivo</label>
-          <input type="text" id="bio-filename" placeholder="ej: retrato.jpg">
-          <div class="hint">Formato recomendado: JPG · 600×800px · menos de 500KB.</div>
-          <div class="file-status" id="bio-filename-status"></div>
+            <input type="file" id="bio-file-input" accept="image/jpeg,image/png,image/webp" style="display:none">
+            <input type="hidden" id="bio-filename">
 
-          <div class="bio-preview-wrap">
-            <img id="bio-img-preview" alt="Vista previa del retrato">
+            <div class="upload-actions">
+              <button type="button" class="btn btn-primary" id="bio-pick-file">📷 Elegir Foto</button>
+              <button type="button" class="btn btn-outline btn-small" id="bio-clear-file" style="display:none">✕ Quitar foto</button>
+            </div>
+            <div class="file-status" id="bio-filename-status"></div>
+            <div class="hint">JPG, PNG o WebP. Recomendado: retrato vertical, máximo 10MB.</div>
           </div>
         </div>
 
@@ -554,27 +574,24 @@ img{display:block;max-width:100%}
     <div class="form-group">
       <label>Foto de la Obra</label>
 
-      <div class="path-step">
-        <div class="step-label"><strong>Paso 1:</strong> Copia tu foto a esta carpeta en tu computadora:</div>
-        <div class="path-box">
-          <span class="path-icon">📁</span>
-          <code id="art-path-display">sitiov1 / images / obras /</code>
-          <button type="button" class="btn btn-outline btn-small" id="art-copy-path">📋 Copiar ruta</button>
+      <div class="upload-wrap">
+        <div class="art-preview-wrap">
+          <img id="art-img-preview" alt="Vista previa de la foto">
+          <div class="upload-overlay" id="art-upload-overlay">
+            <div class="upload-spinner"></div>
+            <div class="upload-text">Subiendo foto…</div>
+          </div>
         </div>
-      </div>
 
-      <label style="margin-top:14px">Paso 2: Nombre exacto del archivo</label>
-      <input type="text" id="art-filename" placeholder="ej: obra-02.jpg">
-      <div class="hint">Incluye la extensión: .jpg, .png o .webp. Déjalo vacío para usar un placeholder.</div>
-      <div class="file-status" id="art-filename-status"></div>
+        <input type="file" id="art-file-input" accept="image/jpeg,image/png,image/webp" style="display:none">
+        <input type="hidden" id="art-filename">
 
-      <div class="art-preview-wrap">
-        <img id="art-img-preview" alt="Vista previa de la foto">
-        <div class="preview-msg">Si la imagen no aparece, revisa el nombre del archivo y que esté en la carpeta correcta.</div>
-      </div>
-
-      <div class="hint-box">
-        💡 <strong>¿No tienes la foto lista todavía?</strong> Deja el campo vacío — se mostrará un placeholder hasta que agregues la foto.
+        <div class="upload-actions">
+          <button type="button" class="btn btn-primary" id="art-pick-file">📷 Elegir Foto</button>
+          <button type="button" class="btn btn-outline btn-small" id="art-clear-file" style="display:none">✕ Quitar foto</button>
+        </div>
+        <div class="file-status" id="art-filename-status"></div>
+        <div class="hint">JPG, PNG o WebP. Máximo 10MB. La foto se guarda en la nube y aparece en tu sitio al instante.</div>
       </div>
     </div>
 
@@ -658,9 +675,10 @@ img{display:block;max-width:100%}
 
 <script src="data.js"></script>
 <script>
-(function(){
+(async function(){
   // ========= STATE =========
-  let data = getSiteData();
+  // Load initial data from Supabase (shows a loading state while awaiting).
+  let data = await fetchSiteData();
   let editingArtworkId = null; // null = new, number = editing existing
   let editingExhibitionId = null;
   let pendingDelete = null;
@@ -694,15 +712,26 @@ img{display:block;max-width:100%}
   $('#confirm-yes').addEventListener('click', ()=>{ if(pendingDelete) pendingDelete(); $('#confirm-bd').classList.remove('open'); pendingDelete=null; });
   $('#confirm-bd').addEventListener('click', e=>{ if(e.target.id==='confirm-bd'){ $('#confirm-bd').classList.remove('open'); pendingDelete=null; }});
 
-  function saveAll(silent){
-    const ok = saveSiteData(data);
+  async function saveAll(silent){
+    // Show a subtle saving state on the header button
+    const btn = $('#btn-save-all');
+    const original = btn ? btn.textContent : null;
+    if(btn){ btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+    data.lastSaved = new Date().toISOString();
+    const ok = await saveSiteDataToSupabase(data);
+
+    if(btn){ btn.disabled = false; btn.textContent = original; }
+
     if(ok){
       if(!silent) toast('¡Guardado! Los cambios aparecen en tu sitio.', 'success');
       updateSavedAt();
       updateCheckmarks();
+      // Re-sync in-memory data with Supabase so any auto-generated fields match
+      try { data = await fetchSiteData(); } catch(e) {}
       return true;
     } else {
-      toast('No hay suficiente espacio. Intenta con una imagen más pequeña (menos de 1MB).', 'error');
+      toast('No se pudo guardar. Revisa tu conexión a internet.', 'error');
       return false;
     }
   }
@@ -741,8 +770,8 @@ img{display:block;max-width:100%}
       $$('.section').forEach(s=>s.classList.toggle('active', s.dataset.panel===name));
     });
   });
-  $('#view-site-btn').addEventListener('click', ()=>{
-    saveAll(true);
+  $('#view-site-btn').addEventListener('click', async ()=>{
+    await saveAll(true);
     window.open('index.html', '_blank');
   });
 
@@ -895,33 +924,46 @@ img{display:block;max-width:100%}
     openDrawer();
   }
 
-  // Preview-check the filename: show real file if it loads, otherwise fall back to placeholder.
+  // Preview the current artwork image value. Accepts a full URL (Supabase Storage)
+  // OR a legacy filename in images/obras/, OR empty (placeholder).
   function checkArtFilename(filename, artCtx){
     const preview = $('#art-img-preview');
     const status  = $('#art-filename-status');
-    const input   = $('#art-filename');
+    const clearBtn = $('#art-clear-file');
     const ctx = artCtx || { id: editingArtworkId || 0, image: 'placeholder' };
     const placeholderSrc = getArtworkImageSrc({ id: ctx.id || 0, image: 'placeholder' });
+
     if(!filename){
       preview.src = placeholderSrc;
-      input.style.borderColor = '';
       status.textContent = 'Sin foto — se mostrará el placeholder.';
       status.className = 'file-status';
+      clearBtn.style.display = 'none';
       return;
     }
+
+    clearBtn.style.display = '';
+
+    // Full URL (Supabase Storage) — just show it.
+    if(/^https?:\/\//i.test(filename)){
+      preview.src = filename;
+      status.textContent = '✓ Foto cargada desde la nube.';
+      status.className = 'file-status ok';
+      updatePreview();
+      return;
+    }
+
+    // Legacy: bare filename in images/obras/
     const testSrc = 'images/obras/' + filename;
     const tester = new Image();
     tester.onload = ()=>{
       preview.src = testSrc;
-      input.style.borderColor = 'var(--admin-success)';
-      status.textContent = '✓ Foto encontrada: ' + filename;
+      status.textContent = '✓ Foto local: ' + filename;
       status.className = 'file-status ok';
       updatePreview();
     };
     tester.onerror = ()=>{
       preview.src = placeholderSrc;
-      input.style.borderColor = 'var(--admin-warning)';
-      status.textContent = '⚠ No se encontró el archivo en images/obras/ — se usará el placeholder.';
+      status.textContent = '⚠ Archivo no encontrado — se usará el placeholder.';
       status.className = 'file-status warn';
       updatePreview();
     };
@@ -943,35 +985,110 @@ img{display:block;max-width:100%}
   $('#drawer-cancel').addEventListener('click', closeDrawer);
   $('#drawer-bd').addEventListener('click', closeDrawer);
 
-  // Filename input — debounced live preview check
-  let artFilenameTimer = null;
-  $('#art-filename').addEventListener('input', ()=>{
-    clearTimeout(artFilenameTimer);
-    const v = $('#art-filename').value.trim();
-    artFilenameTimer = setTimeout(()=>checkArtFilename(v), 400);
+  // ========= IMAGE UPLOADS TO SUPABASE STORAGE =========
+  const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10 MB
+
+  // Generic Supabase Storage uploader. Returns the public URL on success, null on failure.
+  async function uploadImageToStorage(file, prefix){
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const safeExt = ['jpg','jpeg','png','webp'].includes(ext) ? ext : 'jpg';
+    const fileName = prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2,8) + '.' + safeExt;
+    const { error } = await supabase.storage
+      .from('artwork-images')
+      .upload(fileName, file, { cacheControl: '3600', upsert: false, contentType: file.type || ('image/' + safeExt) });
+    if(error){ console.error('Upload failed:', error); return null; }
+    const { data } = supabase.storage.from('artwork-images').getPublicUrl(fileName);
+    return data && data.publicUrl ? data.publicUrl : null;
+  }
+
+  function validateImageFile(file){
+    if(!file) return 'Elige un archivo.';
+    if(!/^image\/(jpeg|png|webp)$/i.test(file.type)) return 'Solo se permiten JPG, PNG o WebP.';
+    if(file.size > MAX_UPLOAD_BYTES) return 'La foto es demasiado grande. Máximo 10MB.';
+    return null;
+  }
+
+  function wireFileUpload(opts){
+    // opts: { pickBtn, clearBtn, fileInput, hiddenInput, overlay, previewImg, onUploaded, onCleared }
+    opts.pickBtn.addEventListener('click', ()=>opts.fileInput.click());
+
+    opts.fileInput.addEventListener('change', async (e)=>{
+      const file = e.target.files && e.target.files[0];
+      opts.fileInput.value = ''; // reset so the same file can be picked again
+      if(!file) return;
+
+      const err = validateImageFile(file);
+      if(err){ toast(err, 'error'); return; }
+
+      // Show a preview immediately from the local file (feels instant)
+      const localPreviewUrl = URL.createObjectURL(file);
+      opts.previewImg.src = localPreviewUrl;
+      opts.overlay.classList.add('active');
+      opts.pickBtn.disabled = true;
+
+      try {
+        const publicUrl = await uploadImageToStorage(file, opts.prefix);
+        if(!publicUrl){
+          toast('No se pudo subir la foto. Revisa tu conexión.', 'error');
+          // Revert preview
+          checkArtFilenameHelper(opts.hiddenInput.value);
+          return;
+        }
+        opts.hiddenInput.value = publicUrl;
+        opts.onUploaded(publicUrl);
+      } finally {
+        URL.revokeObjectURL(localPreviewUrl);
+        opts.overlay.classList.remove('active');
+        opts.pickBtn.disabled = false;
+      }
+    });
+
+    opts.clearBtn.addEventListener('click', ()=>{
+      opts.hiddenInput.value = '';
+      opts.onCleared();
+    });
+  }
+
+  // Helper used by the uploader to re-render a preview after errors
+  function checkArtFilenameHelper(v){ checkArtFilename(v); }
+
+  // Wire artwork image picker
+  wireFileUpload({
+    prefix:      'obra',
+    pickBtn:     $('#art-pick-file'),
+    clearBtn:    $('#art-clear-file'),
+    fileInput:   $('#art-file-input'),
+    hiddenInput: $('#art-filename'),
+    overlay:     $('#art-upload-overlay'),
+    previewImg:  $('#art-img-preview'),
+    onUploaded: (url)=>{
+      checkArtFilename(url);
+      toast('¡Foto subida! Recuerda hacer clic en Guardar.', 'success');
+    },
+    onCleared: ()=>{
+      checkArtFilename('');
+      toast('Foto quitada.', 'success');
+    }
   });
 
-  // Copy path to clipboard
-  function copyFolderPath(subfolder, btn){
-    const base = window.location.href.replace(/[^/\\]+\.html(\?.*)?(#.*)?$/, '');
-    let folderPath = base + 'images/' + subfolder + '/';
-    if(folderPath.startsWith('file:///')){
-      folderPath = folderPath.replace('file:///', '').replace(/\//g, '\\');
+  // Wire bio portrait picker
+  wireFileUpload({
+    prefix:      'retrato',
+    pickBtn:     $('#bio-pick-file'),
+    clearBtn:    $('#bio-clear-file'),
+    fileInput:   $('#bio-file-input'),
+    hiddenInput: $('#bio-filename'),
+    overlay:     $('#bio-upload-overlay'),
+    previewImg:  $('#bio-img-preview'),
+    onUploaded: (url)=>{
+      checkBioFilename(url);
+      toast('¡Foto subida! Recuerda hacer clic en Guardar.', 'success');
+    },
+    onCleared: ()=>{
+      checkBioFilename('');
+      toast('Foto quitada.', 'success');
     }
-    const label = btn.textContent;
-    const done = ()=>{ btn.textContent = '✓ ¡Copiado!'; setTimeout(()=>btn.textContent = label, 2000); };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(folderPath).then(done).catch(()=>{
-        window.prompt('Copia esta ruta (Ctrl+C):', folderPath);
-        done();
-      });
-    } else {
-      window.prompt('Copia esta ruta (Ctrl+C):', folderPath);
-      done();
-    }
-  }
-  $('#art-copy-path').addEventListener('click', ()=>copyFolderPath('obras', $('#art-copy-path')));
-  $('#bio-copy-path').addEventListener('click', ()=>copyFolderPath('artista', $('#bio-copy-path')));
+  });
 
   // Radio selected styling
   $('#art-category-group').addEventListener('change', e=>{
@@ -1016,7 +1133,7 @@ img{display:block;max-width:100%}
   }
 
   // Save drawer
-  $('#drawer-save').addEventListener('click', ()=>{
+  $('#drawer-save').addEventListener('click', async ()=>{
     const title = $('#art-title').value.trim();
     if(!title){
       $('#art-title').classList.add('error');
@@ -1045,7 +1162,7 @@ img{display:block;max-width:100%}
     } else {
       data.artworks.push(rec);
     }
-    if(saveAll()){
+    if(await saveAll()){
       renderArtworks();
       closeDrawer();
     }
@@ -1084,39 +1201,38 @@ img{display:block;max-width:100%}
   function checkBioFilename(filename){
     const preview = $('#bio-img-preview');
     const status  = $('#bio-filename-status');
-    const input   = $('#bio-filename');
+    const clearBtn = $('#bio-clear-file');
     if(!filename){
       preview.src = portraitPlaceholder();
-      input.style.borderColor = '';
       status.textContent = 'Sin foto — se mostrará el placeholder.';
       status.className = 'file-status';
+      clearBtn.style.display = 'none';
       return;
     }
+    clearBtn.style.display = '';
+    if(/^https?:\/\//i.test(filename)){
+      preview.src = filename;
+      status.textContent = '✓ Foto cargada desde la nube.';
+      status.className = 'file-status ok';
+      return;
+    }
+    // Legacy filename in images/artista/
     const testSrc = 'images/artista/' + filename;
     const tester = new Image();
     tester.onload = ()=>{
       preview.src = testSrc;
-      input.style.borderColor = 'var(--admin-success)';
-      status.textContent = '✓ Foto encontrada: ' + filename;
+      status.textContent = '✓ Foto local: ' + filename;
       status.className = 'file-status ok';
     };
     tester.onerror = ()=>{
       preview.src = portraitPlaceholder();
-      input.style.borderColor = 'var(--admin-warning)';
-      status.textContent = '⚠ No se encontró el archivo en images/artista/ — se usará el placeholder.';
+      status.textContent = '⚠ Archivo no encontrado — se usará el placeholder.';
       status.className = 'file-status warn';
     };
     tester.src = testSrc;
   }
 
-  let bioFilenameTimer = null;
-  $('#bio-filename').addEventListener('input', ()=>{
-    clearTimeout(bioFilenameTimer);
-    const v = $('#bio-filename').value.trim();
-    bioFilenameTimer = setTimeout(()=>checkBioFilename(v), 400);
-  });
-
-  $('#btn-save-bio').addEventListener('click', ()=>{
+  $('#btn-save-bio').addEventListener('click', async ()=>{
     const filename = $('#bio-filename').value.trim();
     data.bio = {
       paragraph1: $('#bio-p1').value.trim(),
@@ -1129,7 +1245,7 @@ img{display:block;max-width:100%}
         collections: parseInt($('#stat-collections').value, 10) || 0
       }
     };
-    saveAll();
+    await saveAll();
   });
 
   // ========= CONTACT =========
@@ -1141,7 +1257,7 @@ img{display:block;max-width:100%}
     $('#c-instagram').value = c.instagram || '';
     $('#c-facebook').value = c.facebook || '';
   }
-  $('#btn-save-contact').addEventListener('click', ()=>{
+  $('#btn-save-contact').addEventListener('click', async ()=>{
     data.contact = {
       email: $('#c-email').value.trim(),
       phone: $('#c-phone').value.trim(),
@@ -1149,7 +1265,7 @@ img{display:block;max-width:100%}
       instagram: $('#c-instagram').value.trim(),
       facebook: $('#c-facebook').value.trim()
     };
-    saveAll();
+    await saveAll();
   });
 
   // ========= EXHIBITIONS =========
