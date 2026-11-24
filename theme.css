@@ -1,55 +1,90 @@
-/* theme.css — Joselo Thomassiny site color system */
-/* Dark + blue palette. Edit the 9 primary colors to retheme the whole site. */
+/* theme.css — Joselo Thomassiny · Dark Blue System v2 */
+/* 20-color palette: 45% black, 20% charcoal, 25-30% blue, rest accents */
 
 :root {
-  /* === 9 PRIMARY COLORS (edit in admin panel) === */
-  --bg:          #1D1E22;   /* Shadow Grey — main page background */
-  --bg-deep:     #0F1013;   /* Deeper black — footer, hero overlay */
-  --bg-mid:      #262830;   /* Cards, modals, panels */
-  --text:        #E8E9EC;   /* Off White — primary text */
-  --text-mid:    #9DA0AA;   /* Mid Grey — secondary text, labels */
-  --pacific:     #06BDD6;   /* Pacific Blue — PRIMARY accent, CTA, links */
-  --turquoise:   #66E2D0;   /* Turquoise — SECONDARY accent, highlights */
-  --fuchsia:     #C74588;   /* Fuchsia Plum — TERTIARY accent, categories */
-  --spark:       #E36C31;   /* Minimal detail only — tiny warm accents */
+  /* === BACKGROUNDS (45% black, 20% charcoal) === */
+  --pure-black:    #050608;
+  --near-black:    #090B10;
+  --dark-graph:    #11151D;
+  --charcoal:      #1A1D25;
+  --blue-charcoal: #202735;
 
-  /* === DERIVED === */
-  --bg-raised:     #2E303A;
-  --text-muted:    #5C5F6B;
-  --border:        rgba(255,255,255,0.08);
-  --border-strong: rgba(255,255,255,0.16);
+  /* === BLUE TONES (~30% of identity) === */
+  --royal-blue:    #1A69BE;
+  --cyan-blue:     #00E0F9;
+  --midnight:      #102B50;
+  --deep-ocean:    #164A7A;
+  --ice-blue:      #78BFFF;
 
-  /* === GRADIENTS (blue-forward, orange/red minimized) === */
-  --grad-ocean:    linear-gradient(135deg, #06BDD6, #66E2D0);
-  --grad-ice:      linear-gradient(135deg, #66E2D0, #06BDD6);
-  --grad-cool:     linear-gradient(135deg, #06BDD6, #66E2D0);
-  --grad-tropic:   linear-gradient(135deg, #66E2D0, #06BDD6);
-  --grad-warm:     linear-gradient(135deg, #06BDD6, #C74588);  /* hero text — blue→fuchsia */
-  --grad-fire:     linear-gradient(135deg, #06BDD6, #C74588);
-  --grad-mystic:   linear-gradient(135deg, #C74588, #06BDD6);
-  --grad-sunset:   linear-gradient(135deg, #06BDD6, #C74588);
-  --grad-dark:     linear-gradient(135deg, #0F1013, #1D1E22);
-  --grad-spark:    linear-gradient(135deg, #E36C31, #C74588);  /* minimal detail only */
+  /* === SECONDARY ACCENTS === */
+  --aquamarine:    #76FDDD;
+  --dark-purple:   #49305F;
+  --muted-purple:  #74518D;
+  --elec-plum:     #8B4CBA;
+  --muted-red:     #B94759;
+  --crimson:       #D94B59;
+  --orange:        #F07836;
+
+  /* === TYPOGRAPHY PALETTE === */
+  --t-offwhite:  #F4F3F6;
+  --t-silver:    #D0D3DC;
+  --t-lightgray: #B8C0CC;
+  --t-iceblue:   #78BFFF;
+  --t-aqua:      #76FDDD;
+  --t-lavender:  #B29BCB;
+  --t-plum:      #A978B6;
+  --t-crimson:   #C86A79;
+  --t-coral:     #DF777C;
+
+  /* === UI TOKENS === */
+  --bg:            #0A0C12;
+  --bg-deep:       #050608;
+  --bg-mid:        #1A1D25;
+  --bg-raised:     #202735;
+  --text:          #F4F3F6;
+  --text-mid:      #B8C0CC;
+  --text-muted:    #6E7280;
+  --border:        rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.14);
+
+  /* === GRADIENTS (blue-forward) === */
+  --grad-warm:    linear-gradient(135deg, #1A69BE, #8B4CBA);
+  --grad-ocean:   linear-gradient(135deg, #00E0F9, #76FDDD);
+  --grad-ice:     linear-gradient(135deg, #76FDDD, #00E0F9);
+  --grad-cool:    linear-gradient(135deg, #1A69BE, #00E0F9);
+  --grad-tropic:  linear-gradient(135deg, #76FDDD, #1A69BE);
+  --grad-fire:    linear-gradient(135deg, #00E0F9, #8B4CBA);
+  --grad-mystic:  linear-gradient(135deg, #8B4CBA, #1A69BE);
+  --grad-sunset:  linear-gradient(135deg, #1A69BE, #D94B59);
+  --grad-dark:    linear-gradient(135deg, #050608, #0A0C12);
+  --grad-spark:   linear-gradient(135deg, #F07836, #D94B59);
+  --grad-blue:    linear-gradient(135deg, #102B50, #164A7A);
 
   /* === SHADOWS === */
-  --shadow:        0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
-  --shadow-lg:     0 10px 40px rgba(0,0,0,0.5);
+  --shadow:       0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-lg:    0 10px 50px rgba(0,0,0,0.6);
+  --shadow-blue:  0 8px 40px rgba(0,224,249,0.10);
+  --shadow-plum:  0 8px 40px rgba(139,76,186,0.14);
 
-  /* === LEGACY ALIASES (map old warm names to the new blue palette) === */
-  --gunmetal:      #1D1E22;
-  --cream:         #1D1E22;
-  --cream-dark:    #262830;
-  --black:         #0F1013;
-  --frosted:       #66E2D0;
-  --autumn:        #06BDD6;   /* CTAs now pacific blue */
-  --cherry:        #C74588;   /* hover now fuchsia */
-  --grape:         #C74588;
-  --rosa:          #06BDD6;   /* nav hover underline, blobs */
-  --naranja:       #C74588;
-  --amarillo:      #66E2D0;
-  --azul:          #06BDD6;
-  --turquesa:      #66E2D0;
-  --morado:        #C74588;
-  --verde:         #66E2D0;
-  --atardecer:     #C74588;
+  /* === LEGACY ALIASES (backward compat) === */
+  --gunmetal:     #0A0C12;
+  --cream:        #0A0C12;
+  --cream-dark:   #1A1D25;
+  --black:        #050608;
+  --frosted:      #76FDDD;
+  --autumn:       #00E0F9;
+  --cherry:       #D94B59;
+  --grape:        #8B4CBA;
+  --rosa:         #1A69BE;
+  --naranja:      #F07836;
+  --amarillo:     #78BFFF;
+  --azul:         #00E0F9;
+  --turquesa:     #76FDDD;
+  --morado:       #8B4CBA;
+  --verde:        #76FDDD;
+  --atardecer:    #D94B59;
+  --pacific:      #00E0F9;
+  --turquoise:    #76FDDD;
+  --fuchsia:      #8B4CBA;
+  --spark:        #F07836;
 }
