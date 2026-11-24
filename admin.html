@@ -1329,11 +1329,12 @@ img{display:block;max-width:100%}
   $('#btn-save-bio').addEventListener('click', async ()=>{
     const filename = $('#bio-filename').value.trim();
     data.bio = {
-      paragraph1: $('#bio-p1').value.trim(),
-      paragraph2: $('#bio-p2').value.trim(),
-      statement:  $('#bio-statement').value.trim(),
+      paragraph1:    $('#bio-p1').value.trim(),
+      paragraph2:    $('#bio-p2').value.trim(),
+      statement:     $('#bio-statement').value.trim(),
       portraitImage: filename || null,
-      stats: (data.bio || {}).stats || { works: 0, exhibitions: 0, collections: 0 }
+      extendedHtml:  (data.bio || {}).extendedHtml || '',
+      stats:         (data.bio || {}).stats || { works: 0, exhibitions: 0, collections: 0 }
     };
     await saveAll();
   });

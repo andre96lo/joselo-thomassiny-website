@@ -3,6 +3,15 @@
 // Los cambios del panel de administración se guardan en localStorage.
 
 const SITE_DATA_KEY = 'joselo_site_data';
+// localStorage fallbacks for Supabase columns that may not exist yet
+const LS_EXTENDED = 'joselo_bio_extended';
+const LS_AWARDS   = 'joselo_awards';
+function lsGet(key, def) {
+  try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : def; } catch(e) { return def; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
 
 const DEFAULT_DATA = {
   artworks: [
@@ -116,12 +125,21 @@ async function fetchSiteData() {
       awardsData = data || [];
     } catch(e) { /* awards table may not exist yet */ }
 
+    // Normalize bio and fill extendedHtml from localStorage if Supabase column missing
+    const bioNorm = normalizeBio(bioRes.data);
+    if (!bioNorm.extendedHtml) bioNorm.extendedHtml = lsGet(LS_EXTENDED, '');
+
+    // Use localStorage awards if Supabase table missing/empty
+    const normalizedAwards = awardsData.length
+      ? awardsData.map(normalizeAward)
+      : lsGet(LS_AWARDS, []);
+
     return {
       artworks:    (artworksRes.data    || []).map(normalizeArtwork),
-      bio:         normalizeBio(bioRes.data),
+      bio:         bioNorm,
       contact:     normalizeContact(contactRes.data),
       exhibitions: (exhibitionsRes.data || []).map(normalizeExhibition),
-      awards:      awardsData.map(normalizeAward),
+      awards:      normalizedAwards,
       lastSaved:   null
     };
   } catch (e) {
@@ -144,6 +162,8 @@ async function saveSiteDataToSupabase(data) {
     {
       const b = data.bio || {};
       const stats = b.stats || {};
+      // Always persist extendedHtml to localStorage as an immediate fallback
+      lsSet(LS_EXTENDED, b.extendedHtml || '');
       const bioBase = {
         id: 1,
         paragraph1:       b.paragraph1 || '',
@@ -231,7 +251,8 @@ async function saveSiteDataToSupabase(data) {
       }
     }
 
-    // 5) Awards — same delete+upsert pattern
+    // 5) Awards — always persist to localStorage, also try Supabase
+    lsSet(LS_AWARDS, data.awards || []);
     try {
       const localAwardIds = (data.awards || []).map(a => a.id).filter(Boolean);
       const { data: remoteAw, error: selAwErr } = await supabase.from('awards').select('id');
@@ -247,7 +268,7 @@ async function saveSiteDataToSupabase(data) {
         }));
         if (awRows.length) await supabase.from('awards').upsert(awRows);
       }
-    } catch(e) { console.warn('Awards save skipped (table may not exist):', e); }
+    } catch(e) { console.warn('Awards Supabase sync skipped (table may not exist):', e); }
 
     return true;
   } catch (e) {
