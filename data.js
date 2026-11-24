@@ -144,19 +144,23 @@ async function saveSiteDataToSupabase(data) {
     {
       const b = data.bio || {};
       const stats = b.stats || {};
-      const { error } = await supabase.from('bio').upsert({
+      const bioBase = {
         id: 1,
-        paragraph1:        b.paragraph1 || '',
-        paragraph2:        b.paragraph2 || '',
-        statement:         b.statement  || '',
-        portrait_url:      b.portraitImage || null,
-        extended_html:     b.extendedHtml || '',
-        stat_works:        stats.works       || 0,
-        stat_exhibitions:  stats.exhibitions || 0,
-        stat_collections:  stats.collections || 0,
-        updated_at:        now
-      });
-      if (error) throw error;
+        paragraph1:       b.paragraph1 || '',
+        paragraph2:       b.paragraph2 || '',
+        statement:        b.statement  || '',
+        portrait_url:     b.portraitImage || null,
+        stat_works:       stats.works       || 0,
+        stat_exhibitions: stats.exhibitions || 0,
+        stat_collections: stats.collections || 0,
+        updated_at:       now
+      };
+      // Try with extended_html; fall back without it if the column doesn't exist yet
+      let { error } = await supabase.from('bio').upsert({ ...bioBase, extended_html: b.extendedHtml || '' });
+      if (error) {
+        const r2 = await supabase.from('bio').upsert(bioBase);
+        if (r2.error) throw r2.error;
+      }
     }
 
     // 2) Contact (single row, id=1)
