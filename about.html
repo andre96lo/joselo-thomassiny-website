@@ -212,8 +212,6 @@ footer .foot .location{color:var(--t-plum)}
     <a href="index.html">Inicio</a>
     <a href="index.html#obras">Obras</a>
     <a href="#top" class="active">Acerca</a>
-    <a href="#exposiciones">Exposiciones</a>
-    <a href="#contacto">Contacto</a>
   </nav>
   <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
 </header>
@@ -222,8 +220,6 @@ footer .foot .location{color:var(--t-plum)}
   <a href="index.html">Inicio</a>
   <a href="index.html#obras">Obras</a>
   <a href="#top">Acerca</a>
-  <a href="#exposiciones">Exposiciones</a>
-  <a href="#contacto">Contacto</a>
 </div>
 
 <main id="top">
@@ -284,63 +280,6 @@ footer .foot .location{color:var(--t-plum)}
     </div>
   </section>
 
-  <section class="exhibitions" id="exposiciones">
-    <div class="container">
-      <div class="marker reveal"><span class="num">[03]</span><span class="lbl">Trayectoria</span></div>
-      <h2 class="h2 reveal">Exposiciones</h2>
-      <div class="ex-table">
-        <div class="ex-row ex-head">
-          <span>¿Dónde?</span><span>Obra</span><span>Fechas</span><span>Estado</span>
-        </div>
-        <div id="ex-rows"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="contact" id="contacto">
-    <div class="container">
-      <div class="marker reveal"><span class="num">[04]</span><span class="lbl">Contacto</span></div>
-      <h2 class="h2 reveal">Hablemos</h2>
-      <div class="contact-grid">
-        <form class="reveal" id="contact-form" onsubmit="return false">
-          <div class="field">
-            <label for="f-name">Nombre</label>
-            <input id="f-name" type="text" required>
-          </div>
-          <div class="field">
-            <label for="f-email">Email</label>
-            <input id="f-email" type="email" required>
-          </div>
-          <div class="field">
-            <label for="f-msg">Mensaje</label>
-            <textarea id="f-msg" required></textarea>
-          </div>
-          <button type="submit" class="cta form-submit" id="f-submit">Enviar Mensaje</button>
-        </form>
-        <div class="reveal">
-          <div class="info-block">
-            <div class="lbl">Email</div>
-            <div class="val"><a id="info-email" href="#"></a></div>
-          </div>
-          <div class="info-block">
-            <div class="lbl">WhatsApp</div>
-            <div class="val"><a id="info-wa" href="#"></a></div>
-          </div>
-          <div class="info-block">
-            <div class="lbl">Teléfono</div>
-            <div class="val" id="info-phone"></div>
-          </div>
-          <div class="info-block">
-            <div class="lbl">Redes Sociales</div>
-            <div class="socials">
-              <a id="info-ig" href="#" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
-              <a id="info-fb" href="#" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer>
@@ -356,7 +295,6 @@ footer .foot .location{color:var(--t-plum)}
           <li><a href="index.html">Inicio</a></li>
           <li><a href="index.html#obras">Obras</a></li>
           <li><a href="#top">Acerca</a></li>
-          <li><a href="#contacto">Contacto</a></li>
         </ul>
       </div>
       <div>
@@ -407,32 +345,8 @@ footer .foot .location{color:var(--t-plum)}
     if(counters[1]) counters[1].dataset.target = stats.exhibitions;
     if(counters[2]) counters[2].dataset.target = stats.collections;
 
-    // Exhibitions
-    document.getElementById('ex-rows').innerHTML = (d.exhibitions||[]).map(e=>`
-      <div class="ex-row reveal-row">
-        <span class="venue">${e.venue}</span>
-        <span class="name">${e.name}</span>
-        <span class="yr">${e.year}</span>
-        <span><span class="pill ${e.status}">${e.status==='upcoming'?'Próxima':'Pasada'}</span></span>
-      </div>`).join('');
-
-    // Contact
-    const c = d.contact;
-    const email = document.getElementById('info-email');
-    email.textContent = c.email || '';
-    email.href = 'mailto:' + (c.email || '');
-    const wa = document.getElementById('info-wa');
-    wa.textContent = c.whatsapp || c.phone || '';
-    wa.href = 'https://wa.me/' + ((c.whatsapp || c.phone) || '').replace(/\D/g,'');
-    document.getElementById('info-phone').textContent = c.phone || '';
-    const ig = document.getElementById('info-ig');
-    if(c.instagram){ ig.href = 'https://instagram.com/' + c.instagram.replace(/^@/,''); ig.style.display=''; }
-    else ig.style.display='none';
-    const fb = document.getElementById('info-fb');
-    if(c.facebook){ fb.href = 'https://facebook.com/' + c.facebook; fb.style.display=''; }
-    else fb.style.display='none';
-
     // Footer contact
+    const c = d.contact;
     const ul = document.getElementById('foot-contact');
     ul.innerHTML = [
       c.email ? `<li><a href="mailto:${c.email}">${c.email}</a></li>` : '',
@@ -468,23 +382,6 @@ footer .foot .location{color:var(--t-plum)}
     }
   }
   applyData(DATA);
-
-  // Contact form
-  document.getElementById('f-submit').addEventListener('click', e=>{
-    e.preventDefault();
-    const name = document.getElementById('f-name').value.trim();
-    const email = document.getElementById('f-email').value.trim();
-    const msg = document.getElementById('f-msg').value.trim();
-    if(!name || !email || !msg) return;
-    const btn = document.getElementById('f-submit');
-    btn.textContent = '✓ Enviado';
-    btn.style.background = 'var(--royal-blue)';
-    setTimeout(()=>{
-      btn.textContent = 'Enviar Mensaje';
-      btn.style.background = '';
-      document.getElementById('contact-form').reset();
-    }, 3000);
-  });
 
   // Nav scroll
   const nav = document.getElementById('nav');
@@ -544,10 +441,6 @@ footer .foot .location{color:var(--t-plum)}
     document.querySelectorAll('.reveal').forEach(el=>{
       gsap.to(el, {opacity:1,y:0,duration:.8,ease:'power3.out', scrollTrigger:{trigger:el, start:'top 85%'}});
     });
-
-    // Exhibition rows
-    gsap.from('.reveal-row', {x:-24, opacity:0, duration:.6, stagger:.08,
-      scrollTrigger:{trigger:'#ex-rows', start:'top 80%'}});
 
     // Counters
     document.querySelectorAll('.counter').forEach(el=>{
