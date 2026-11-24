@@ -1,0 +1,55 @@
+/* theme.css — Joselo Thomassiny site color system */
+/* Dark + blue palette. Edit the 9 primary colors to retheme the whole site. */
+
+:root {
+  /* === 9 PRIMARY COLORS (edit in admin panel) === */
+  --bg:          #1D1E22;   /* Shadow Grey — main page background */
+  --bg-deep:     #0F1013;   /* Deeper black — footer, hero overlay */
+  --bg-mid:      #262830;   /* Cards, modals, panels */
+  --text:        #E8E9EC;   /* Off White — primary text */
+  --text-mid:    #9DA0AA;   /* Mid Grey — secondary text, labels */
+  --pacific:     #06BDD6;   /* Pacific Blue — PRIMARY accent, CTA, links */
+  --turquoise:   #66E2D0;   /* Turquoise — SECONDARY accent, highlights */
+  --fuchsia:     #C74588;   /* Fuchsia Plum — TERTIARY accent, categories */
+  --spark:       #E36C31;   /* Minimal detail only — tiny warm accents */
+
+  /* === DERIVED === */
+  --bg-raised:     #2E303A;
+  --text-muted:    #5C5F6B;
+  --border:        rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.16);
+
+  /* === GRADIENTS (blue-forward, orange/red minimized) === */
+  --grad-ocean:    linear-gradient(135deg, #06BDD6, #66E2D0);
+  --grad-ice:      linear-gradient(135deg, #66E2D0, #06BDD6);
+  --grad-cool:     linear-gradient(135deg, #06BDD6, #66E2D0);
+  --grad-tropic:   linear-gradient(135deg, #66E2D0, #06BDD6);
+  --grad-warm:     linear-gradient(135deg, #06BDD6, #C74588);  /* hero text — blue→fuchsia */
+  --grad-fire:     linear-gradient(135deg, #06BDD6, #C74588);
+  --grad-mystic:   linear-gradient(135deg, #C74588, #06BDD6);
+  --grad-sunset:   linear-gradient(135deg, #06BDD6, #C74588);
+  --grad-dark:     linear-gradient(135deg, #0F1013, #1D1E22);
+  --grad-spark:    linear-gradient(135deg, #E36C31, #C74588);  /* minimal detail only */
+
+  /* === SHADOWS === */
+  --shadow:        0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-lg:     0 10px 40px rgba(0,0,0,0.5);
+
+  /* === LEGACY ALIASES (map old warm names to the new blue palette) === */
+  --gunmetal:      #1D1E22;
+  --cream:         #1D1E22;
+  --cream-dark:    #262830;
+  --black:         #0F1013;
+  --frosted:       #66E2D0;
+  --autumn:        #06BDD6;   /* CTAs now pacific blue */
+  --cherry:        #C74588;   /* hover now fuchsia */
+  --grape:         #C74588;
+  --rosa:          #06BDD6;   /* nav hover underline, blobs */
+  --naranja:       #C74588;
+  --amarillo:      #66E2D0;
+  --azul:          #06BDD6;
+  --turquesa:      #66E2D0;
+  --morado:        #C74588;
+  --verde:         #66E2D0;
+  --atardecer:     #C74588;
+}

@@ -224,10 +224,10 @@ function resetSiteData() {
 
 // Category metadata shared across pages
 const CATEGORY_META = {
-  'painting':     { label: 'Pintura',       color: '#E4247A', gradient: 'linear-gradient(135deg, #E4247A, #FA7E1E)' },
+  'painting':     { label: 'Pintura',       color: '#E4247A', gradient: 'linear-gradient(135deg,rgb(72, 185, 255),rgb(30, 239, 239))' },
   'drawing':      { label: 'Dibujo',        color: '#275EEA', gradient: 'linear-gradient(135deg, #275EEA, #4AF2DC)' },
-  'digital':      { label: 'Arte Digital',  color: '#4AF2DC', gradient: 'linear-gradient(135deg, #09F557, #4AF2DC)' },
-  'mixed-media':  { label: 'Técnica Mixta', color: '#9B2FAA', gradient: 'linear-gradient(135deg, #9B2FAA, #E4247A)' },
+  'digital':      { label: 'Arte Digital',  color: '#4AF2DC', gradient: 'linear-gradient(135deg,rgb(138, 209, 227),rgb(15, 127, 239))' },
+  'mixed-media':  { label: 'Técnica Mixta', color: '#9B2FAA', gradient: 'linear-gradient(135deg,rgb(198, 132, 146), #E4247A)' },
   'sculpture':    { label: 'Escultura',     color: '#FFCC00', gradient: 'linear-gradient(135deg, #FA7E1E, #FFCC00)' }
 };
 
