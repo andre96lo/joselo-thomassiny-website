@@ -242,6 +242,16 @@ img{display:block;max-width:100%}
 .preview-card .preview-dim{font-size:12px;color:var(--admin-muted);margin-bottom:6px}
 .preview-card .preview-price{font-size:16px;font-weight:600;background:var(--grad-fire);-webkit-background-clip:text;background-clip:text;color:transparent}
 
+/* Awards list */
+.award-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:14px 16px;border-radius:10px;border:1px solid var(--admin-border);background:var(--admin-card);margin-bottom:8px}
+.award-item .aw-title{font-weight:600;font-size:15px;color:var(--admin-text);margin-bottom:4px}
+.award-item .aw-inst{font-size:12px;color:var(--admin-primary);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.award-item .aw-desc{font-size:13px;color:var(--admin-muted);margin-top:4px;line-height:1.5}
+.award-form{border:1px solid var(--admin-primary);background:var(--admin-primary-soft);padding:16px;border-radius:10px;margin-bottom:10px}
+.award-form .actions{margin-top:14px;display:flex;gap:10px;justify-content:flex-end}
+/* HTML editor */
+.html-editor{font-family:'JetBrains Mono',Consolas,monospace;font-size:12px;min-height:280px;line-height:1.65;tab-size:2;resize:vertical}
+
 /* Mobile */
 @media (max-width:900px){
   .layout{grid-template-columns:1fr}
@@ -415,6 +425,16 @@ img{display:block;max-width:100%}
       <span>Sobre Mí</span>
       <span class="check" id="bio-check">✓</span>
     </button>
+    <button class="nav-item" data-section="awards">
+      <span class="ico">🏆</span>
+      <span>Premios</span>
+      <span class="count" id="awards-count">0</span>
+    </button>
+    <button class="nav-item" data-section="biocontent">
+      <span class="ico">📝</span>
+      <span>Contenido Bio</span>
+      <span class="check" id="biocontent-check" style="display:none">✓</span>
+    </button>
     <button class="nav-item" data-section="contact">
       <span class="ico">📞</span>
       <span>Contacto</span>
@@ -505,27 +525,47 @@ img{display:block;max-width:100%}
           <div class="char-count"><span id="bio-statement-count">0</span> / 200 caracteres</div>
         </div>
 
-        <div class="card-divider"></div>
-
-        <div class="form-group">
-          <label>Estadísticas</label>
-          <div class="form-row" style="grid-template-columns:repeat(3,1fr)">
-            <div>
-              <label style="font-size:11px">Obras</label>
-              <input type="number" id="stat-works" min="0">
-            </div>
-            <div>
-              <label style="font-size:11px">Exposiciones</label>
-              <input type="number" id="stat-exhibitions" min="0">
-            </div>
-            <div>
-              <label style="font-size:11px">Colecciones</label>
-              <input type="number" id="stat-collections" min="0">
-            </div>
-          </div>
-        </div>
-
         <button class="btn btn-success" id="btn-save-bio"><span>💾</span> Guardar Cambios</button>
+      </div>
+    </section>
+
+    <!-- AWARDS -->
+    <section class="section" data-panel="awards">
+      <div class="section-head">
+        <div>
+          <h2>Premios y Reconocimientos</h2>
+          <div class="sub">Agrega, edita o elimina premios y reconocimientos que aparecen en la página Acerca.</div>
+        </div>
+        <button class="btn btn-primary" id="btn-add-award"><span>+</span> Agregar Premio</button>
+      </div>
+      <div class="card">
+        <div id="award-form-slot"></div>
+        <div id="awards-list"></div>
+      </div>
+    </section>
+
+    <!-- BIO CONTENT HTML -->
+    <section class="section" data-panel="biocontent">
+      <div class="section-head">
+        <div>
+          <h2>Contenido Biográfico</h2>
+          <div class="sub">Edita el contenido extendido de la página «Acerca de» con HTML libre.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="hint-box" style="margin-bottom:20px">
+          Escribe HTML directamente. Puedes usar <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">&lt;h3&gt;</code>, <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">&lt;p&gt;</code>, <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">&lt;ul&gt;</code>, <code style="background:rgba(255,255,255,.1);padding:1px 5px;border-radius:3px">&lt;strong&gt;</code> y más.
+          <br>Temas sugeridos: <strong>Propuesta artística · Exposiciones recientes · Labor social y activismo · Inspiración artística</strong>.
+        </div>
+        <div class="form-group">
+          <label>Contenido HTML completo</label>
+          <textarea class="html-editor" id="bio-extended-html" rows="22" placeholder="&lt;h3&gt;Propuesta Artística&lt;/h3&gt;&#10;&lt;p&gt;Su enfoque artístico aborda la identidad, la soledad y la condición humana…&lt;/p&gt;&#10;&#10;&lt;h3&gt;Labor Social y Activismo&lt;/h3&gt;&#10;&lt;p&gt;Fundador de La Casa de los Zafiros…&lt;/p&gt;"></textarea>
+        </div>
+        <button class="btn btn-success" id="btn-save-biocontent"><span>💾</span> Guardar Contenido</button>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <strong style="font-size:14px;display:block;margin-bottom:12px;color:var(--admin-muted)">Vista Previa</strong>
+        <div id="biocontent-preview" style="color:var(--admin-text);font-size:14px;line-height:1.75;padding:16px;border:1px solid var(--admin-border);border-radius:8px;min-height:80px"></div>
       </div>
     </section>
 
@@ -1245,9 +1285,6 @@ img{display:block;max-width:100%}
     $('#bio-p1').value = b.paragraph1 || '';
     $('#bio-p2').value = b.paragraph2 || '';
     $('#bio-statement').value = b.statement || '';
-    $('#stat-works').value = (b.stats||{}).works || 0;
-    $('#stat-exhibitions').value = (b.stats||{}).exhibitions || 0;
-    $('#stat-collections').value = (b.stats||{}).collections || 0;
     $('#bio-filename').value = b.portraitImage || '';
     checkBioFilename($('#bio-filename').value.trim());
     bindCount('bio-p1','bio-p1-count');
@@ -1296,11 +1333,7 @@ img{display:block;max-width:100%}
       paragraph2: $('#bio-p2').value.trim(),
       statement:  $('#bio-statement').value.trim(),
       portraitImage: filename || null,
-      stats: {
-        works: parseInt($('#stat-works').value, 10) || 0,
-        exhibitions: parseInt($('#stat-exhibitions').value, 10) || 0,
-        collections: parseInt($('#stat-collections').value, 10) || 0
-      }
+      stats: (data.bio || {}).stats || { works: 0, exhibitions: 0, collections: 0 }
     };
     await saveAll();
   });
@@ -1418,6 +1451,116 @@ img{display:block;max-width:100%}
     }
     if(e.key === 'Escape'){
       if($('#art-drawer').classList.contains('open')) closeDrawer();
+    }
+  });
+
+  // ========= AWARDS =========
+  let editingAwardId = null;
+
+  function nextAwardId(){
+    const ids = (data.awards||[]).map(x=>x.id);
+    return ids.length ? Math.max.apply(null, ids) + 1 : 1;
+  }
+
+  function renderAwards(){
+    const list = $('#awards-list');
+    const countEl = $('#awards-count');
+    if(countEl) countEl.textContent = (data.awards||[]).length;
+    if(!data.awards || !data.awards.length){
+      list.innerHTML = '<p style="color:var(--admin-muted);font-size:14px;padding:12px 0">No hay premios todavía. Haz clic en «Agregar Premio» para empezar.</p>';
+      return;
+    }
+    list.innerHTML = data.awards.map(aw=>`
+      <div class="award-item" data-id="${aw.id}">
+        <div>
+          <div class="aw-title">${aw.title.replace(/</g,'&lt;')}</div>
+          ${aw.institution ? `<div class="aw-inst">${aw.institution.replace(/</g,'&lt;')}</div>` : ''}
+          ${aw.description ? `<div class="aw-desc">${aw.description.replace(/</g,'&lt;')}</div>` : ''}
+        </div>
+        <span style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-small" data-aw-edit="${aw.id}">✏</button>
+          <button class="btn btn-danger btn-small" data-aw-del="${aw.id}">🗑</button>
+        </span>
+      </div>`).join('');
+    list.querySelectorAll('[data-aw-edit]').forEach(b=>b.addEventListener('click', ()=>openAwardForm(parseInt(b.dataset.awEdit,10))));
+    list.querySelectorAll('[data-aw-del]').forEach(b=>b.addEventListener('click', ()=>{
+      const id = parseInt(b.dataset.awDel, 10);
+      const aw = data.awards.find(x=>x.id===id);
+      confirmAction('¿Eliminar este premio?', '«' + aw.title + '» se eliminará permanentemente.', true, ()=>{
+        data.awards = data.awards.filter(x=>x.id!==id);
+        saveAll(true); renderAwards(); toast('Premio eliminado.', 'success');
+      });
+    }));
+  }
+
+  function openAwardForm(id){
+    editingAwardId = id;
+    const aw = id ? data.awards.find(x=>x.id===id) : { title:'', description:'', institution:'' };
+    $('#award-form-slot').innerHTML = `
+      <div class="award-form">
+        <div class="form-group" style="margin-bottom:12px">
+          <label>Título del Premio <span class="req">*</span></label>
+          <input type="text" id="aw-title" value="${(aw.title||'').replace(/"/g,'&quot;')}">
+        </div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label>Institución (opcional)</label>
+          <input type="text" id="aw-institution" value="${(aw.institution||'').replace(/"/g,'&quot;')}" placeholder="Ej: Consejo Nacional de las Artes">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label>Descripción (opcional)</label>
+          <textarea id="aw-description" rows="2" placeholder="Breve descripción del premio o reconocimiento…">${aw.description||''}</textarea>
+        </div>
+        <div class="actions">
+          <button class="btn btn-outline btn-small" id="aw-cancel">Cancelar</button>
+          <button class="btn btn-success btn-small" id="aw-save">Guardar</button>
+        </div>
+      </div>`;
+    $('#aw-cancel').addEventListener('click', ()=>{ $('#award-form-slot').innerHTML=''; editingAwardId=null; });
+    $('#aw-save').addEventListener('click', ()=>{
+      const title = $('#aw-title').value.trim();
+      if(!title){ $('#aw-title').classList.add('error'); return; }
+      const rec = {
+        id: editingAwardId || nextAwardId(),
+        title,
+        institution: $('#aw-institution').value.trim(),
+        description: $('#aw-description').value.trim()
+      };
+      if(editingAwardId){
+        const idx = data.awards.findIndex(x=>x.id===editingAwardId);
+        if(idx>=0) data.awards[idx] = rec;
+      } else {
+        data.awards.push(rec);
+      }
+      saveAll(true); $('#award-form-slot').innerHTML=''; editingAwardId=null; renderAwards();
+      toast('Premio guardado.', 'success');
+    });
+  }
+
+  $('#btn-add-award').addEventListener('click', ()=>openAwardForm(null));
+
+  // ========= BIO CONTENT HTML =========
+  function loadBioContent(){
+    const html = (data.bio && data.bio.extendedHtml) || '';
+    $('#bio-extended-html').value = html;
+    updateBioContentPreview(html);
+    const check = $('#biocontent-check');
+    if(check) check.style.display = html ? '' : 'none';
+  }
+
+  function updateBioContentPreview(html){
+    const preview = $('#biocontent-preview');
+    preview.innerHTML = (html||'').trim() ? html : '<em style="opacity:.4">Sin contenido todavía.</em>';
+  }
+
+  $('#bio-extended-html').addEventListener('input', function(){ updateBioContentPreview(this.value); });
+
+  $('#btn-save-biocontent').addEventListener('click', async ()=>{
+    if(!data.bio) data.bio = cloneDefault().bio;
+    data.bio.extendedHtml = $('#bio-extended-html').value;
+    const ok = await saveAll();
+    if(ok){
+      const check = $('#biocontent-check');
+      if(check) check.style.display = data.bio.extendedHtml ? '' : 'none';
     }
   });
 
@@ -1662,6 +1805,8 @@ img{display:block;max-width:100%}
   loadBio();
   loadContact();
   renderExhibitions();
+  renderAwards();
+  loadBioContent();
   updateSavedAt();
   updateCheckmarks();
 })();

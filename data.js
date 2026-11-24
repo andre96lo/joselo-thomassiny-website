@@ -18,6 +18,7 @@ const DEFAULT_DATA = {
     paragraph2: '',
     statement: '',
     portraitImage: null,
+    extendedHtml: '',
     stats: { works: 5, exhibitions: 0, collections: 0 }
   },
   contact: {
@@ -28,6 +29,7 @@ const DEFAULT_DATA = {
     whatsapp: '+52 000 000 0000'
   },
   exhibitions: [],
+  awards: [],
   lastSaved: null
 };
 
@@ -52,6 +54,16 @@ function normalizeArtwork(row) {
     sort_order: row.sort_order
   };
 }
+function normalizeAward(row) {
+  return {
+    id: row.id,
+    title: row.title || '',
+    description: row.description || '',
+    institution: row.institution || '',
+    sort_order: row.sort_order
+  };
+}
+
 function normalizeBio(row) {
   if (!row) return cloneDefault().bio;
   return {
@@ -59,6 +71,7 @@ function normalizeBio(row) {
     paragraph2: row.paragraph2 || '',
     statement: row.statement || '',
     portraitImage: row.portrait_url || null,
+    extendedHtml: row.extended_html || '',
     stats: {
       works: row.stat_works || 0,
       exhibitions: row.stat_exhibitions || 0,
@@ -97,11 +110,18 @@ async function fetchSiteData() {
       supabase.from('exhibitions').select('*').order('sort_order')
     ]);
 
+    let awardsData = [];
+    try {
+      const { data } = await supabase.from('awards').select('*').order('sort_order');
+      awardsData = data || [];
+    } catch(e) { /* awards table may not exist yet */ }
+
     return {
       artworks:    (artworksRes.data    || []).map(normalizeArtwork),
       bio:         normalizeBio(bioRes.data),
       contact:     normalizeContact(contactRes.data),
       exhibitions: (exhibitionsRes.data || []).map(normalizeExhibition),
+      awards:      awardsData.map(normalizeAward),
       lastSaved:   null
     };
   } catch (e) {
@@ -130,6 +150,7 @@ async function saveSiteDataToSupabase(data) {
         paragraph2:        b.paragraph2 || '',
         statement:         b.statement  || '',
         portrait_url:      b.portraitImage || null,
+        extended_html:     b.extendedHtml || '',
         stat_works:        stats.works       || 0,
         stat_exhibitions:  stats.exhibitions || 0,
         stat_collections:  stats.collections || 0,
@@ -205,6 +226,24 @@ async function saveSiteDataToSupabase(data) {
         if (error) throw error;
       }
     }
+
+    // 5) Awards — same delete+upsert pattern
+    try {
+      const localAwardIds = (data.awards || []).map(a => a.id).filter(Boolean);
+      const { data: remoteAw, error: selAwErr } = await supabase.from('awards').select('id');
+      if (!selAwErr) {
+        const toDeleteAw = (remoteAw || []).map(r => r.id).filter(id => !localAwardIds.includes(id));
+        if (toDeleteAw.length) await supabase.from('awards').delete().in('id', toDeleteAw);
+        const awRows = (data.awards || []).map((a, i) => ({
+          id:          a.id,
+          title:       a.title || '',
+          description: a.description || '',
+          institution: a.institution || '',
+          sort_order:  i
+        }));
+        if (awRows.length) await supabase.from('awards').upsert(awRows);
+      }
+    } catch(e) { console.warn('Awards save skipped (table may not exist):', e); }
 
     return true;
   } catch (e) {

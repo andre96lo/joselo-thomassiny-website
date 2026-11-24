@@ -131,16 +131,43 @@ body.menu-open #mobile-menu a:nth-child(5){transition-delay:.36s}
 .socials a:hover{border-color:var(--cyan-blue);color:var(--cyan-blue)}
 
 /* Footer */
-footer{background:var(--pure-black);color:var(--t-silver);padding:100px 0 50px;border-top:1px solid rgba(0,224,249,0.05)}
+footer{background:var(--pure-black);color:var(--t-silver);padding:100px 0 50px;border-top:3px solid transparent;border-image:linear-gradient(to right,var(--royal-blue),var(--cyan-blue),var(--crimson)) 1}
 footer .foot-brand{margin-bottom:70px;padding-bottom:60px;border-bottom:1px solid var(--border)}
-footer h4{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:clamp(52px,9vw,110px);text-transform:uppercase;letter-spacing:0.02em;line-height:.88;color:var(--t-offwhite);margin-bottom:16px}
-footer .foot-tagline{font-size:14px;color:var(--text-muted);font-weight:300}
+footer h4{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:clamp(52px,9vw,110px);text-transform:uppercase;letter-spacing:0.02em;line-height:.88;background:linear-gradient(135deg,var(--t-offwhite) 40%,var(--royal-blue));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
+footer .foot-tagline{font-size:20px;color:var(--t-lightgray);font-weight:300}
 footer .cols{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:60px}
-footer .col-head{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
-footer ul{list-style:none;display:flex;flex-direction:column;gap:12px}
-footer a{color:var(--t-lightgray);transition:color .2s;font-size:13px}
+footer .col-head{font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--cyan-blue);margin-bottom:20px}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:14px}
+footer a{color:var(--t-lightgray);transition:color .2s;font-size:17px}
 footer a:hover{color:var(--cyan-blue)}
-footer .foot{border-top:1px solid var(--border);padding-top:30px;display:flex;justify-content:space-between;font-size:11px;color:var(--t-plum);letter-spacing:1.5px;text-transform:uppercase}
+footer .foot{border-top:1px solid var(--border);padding-top:30px;display:flex;justify-content:space-between;font-size:14px;letter-spacing:1.5px;text-transform:uppercase}
+footer .foot .copy{color:var(--crimson)}
+footer .foot .location{color:var(--t-plum)}
+.andrelo-link{font-size:11px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
+.andrelo-link:hover{color:var(--royal-blue)}
+
+/* Awards section */
+.awards{padding:100px 0;background:var(--near-black)}
+.awards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-top:48px}
+.award-card{padding:28px;border:1px solid var(--border);background:var(--charcoal);position:relative;overflow:hidden;transition:border-color .3s}
+.award-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad-cool)}
+.award-card:hover{border-color:rgba(0,224,249,0.2)}
+.award-card .aw-title{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:22px;color:var(--t-offwhite);margin-bottom:6px;line-height:1.2}
+.award-card .aw-inst{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--cyan-blue);margin-bottom:10px}
+.award-card .aw-desc{font-size:14px;color:var(--t-lightgray);line-height:1.6;font-weight:300}
+
+/* Bio extended HTML section */
+.bio-extended{padding:100px 0;background:var(--bg)}
+.bio-extended-content{max-width:780px}
+.bio-extended-content h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(28px,3.5vw,42px);text-transform:uppercase;letter-spacing:-0.01em;color:var(--t-offwhite);margin:48px 0 16px}
+.bio-extended-content h3:first-child{margin-top:0}
+.bio-extended-content p{font-size:16px;line-height:1.85;color:var(--t-lightgray);font-weight:300;margin-bottom:16px}
+.bio-extended-content ul,.bio-extended-content ol{padding-left:20px;margin-bottom:16px}
+.bio-extended-content li{font-size:15px;line-height:1.75;color:var(--t-lightgray);font-weight:300;margin-bottom:6px}
+.bio-extended-content strong{color:var(--t-silver);font-weight:600}
+.bio-extended-content em{color:var(--t-lavender);font-style:italic}
+.bio-extended-content a{color:var(--cyan-blue);border-bottom:1px solid rgba(0,224,249,0.3)}
+.bio-extended-content a:hover{color:var(--aquamarine)}
 
 #cursor{position:fixed;width:8px;height:8px;background:var(--cyan-blue);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,opacity .25s;mix-blend-mode:difference;opacity:.8}
 #cursor.big{width:48px;height:48px;opacity:.4}
@@ -241,9 +268,25 @@ footer .foot{border-top:1px solid var(--border);padding-top:30px;display:flex;ju
     </div>
   </section>
 
+  <!-- Awards section — rendered dynamically -->
+  <section class="awards" id="premios" style="display:none">
+    <div class="container">
+      <div class="marker reveal"><span class="num">[02]</span><span class="lbl">Reconocimientos</span></div>
+      <h2 class="h2 reveal">Premios y<br>Reconocimientos</h2>
+      <div class="awards-grid" id="awards-public"></div>
+    </div>
+  </section>
+
+  <!-- Bio extended HTML content -->
+  <section class="bio-extended" id="bio-contenido" style="display:none">
+    <div class="container">
+      <div class="bio-extended-content reveal" id="bio-extended-public"></div>
+    </div>
+  </section>
+
   <section class="exhibitions" id="exposiciones">
     <div class="container">
-      <div class="marker reveal"><span class="num">[02]</span><span class="lbl">Trayectoria</span></div>
+      <div class="marker reveal"><span class="num">[03]</span><span class="lbl">Trayectoria</span></div>
       <h2 class="h2 reveal">Exposiciones</h2>
       <div class="ex-table">
         <div class="ex-row ex-head">
@@ -256,7 +299,7 @@ footer .foot{border-top:1px solid var(--border);padding-top:30px;display:flex;ju
 
   <section class="contact" id="contacto">
     <div class="container">
-      <div class="marker reveal"><span class="num">[03]</span><span class="lbl">Contacto</span></div>
+      <div class="marker reveal"><span class="num">[04]</span><span class="lbl">Contacto</span></div>
       <h2 class="h2 reveal">Hablemos</h2>
       <div class="contact-grid">
         <form class="reveal" id="contact-form" onsubmit="return false">
@@ -322,8 +365,9 @@ footer .foot{border-top:1px solid var(--border);padding-top:30px;display:flex;ju
       </div>
     </div>
     <div class="foot">
-      <span>© <span id="year"></span> Joselo Thomassiny</span>
-      <span>Cancún · México</span>
+      <span class="copy">© <span id="year"></span> Joselo Thomassiny</span>
+      <span class="location">Cancún · México</span>
+      <a class="andrelo-link" href="https://andrelostudio.com" target="_blank" rel="noopener">Desarrollada por Andrelo Studio</a>
     </div>
   </div>
 </footer>
@@ -395,6 +439,33 @@ footer .foot{border-top:1px solid var(--border);padding-top:30px;display:flex;ju
       (c.whatsapp||c.phone) ? `<li><a href="tel:${(c.whatsapp||c.phone).replace(/\s/g,'')}">${c.whatsapp||c.phone}</a></li>` : '',
       c.instagram ? `<li><a href="https://instagram.com/${c.instagram.replace(/^@/,'')}" target="_blank" rel="noopener">${c.instagram}</a></li>` : ''
     ].join('');
+
+    // Awards
+    const awardsSection = document.getElementById('premios');
+    const awardsGrid = document.getElementById('awards-public');
+    const awards = d.awards || [];
+    if(awards.length){
+      awardsSection.style.display = '';
+      awardsGrid.innerHTML = awards.map(aw=>`
+        <div class="award-card reveal">
+          <div class="aw-title">${aw.title}</div>
+          ${aw.institution ? `<div class="aw-inst">${aw.institution}</div>` : ''}
+          ${aw.description ? `<div class="aw-desc">${aw.description}</div>` : ''}
+        </div>`).join('');
+    } else {
+      awardsSection.style.display = 'none';
+    }
+
+    // Extended bio HTML
+    const bioExtSection = document.getElementById('bio-contenido');
+    const bioExtContent = document.getElementById('bio-extended-public');
+    const extHtml = (d.bio && d.bio.extendedHtml) || '';
+    if(extHtml.trim()){
+      bioExtSection.style.display = '';
+      bioExtContent.innerHTML = extHtml;
+    } else {
+      bioExtSection.style.display = 'none';
+    }
   }
   applyData(DATA);
 
