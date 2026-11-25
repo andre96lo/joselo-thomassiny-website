@@ -194,6 +194,54 @@ footer .foot .location{color:var(--t-plum)}
   .reveal{opacity:1!important;transform:none!important}
   *{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* ===== About page palette (requested scheme) ===== */
+:root{
+  --ab-blue:#06BDD6;   /* primary blue */
+  --ab-cyan:#AEE7EF;   /* light cyan */
+  --ab-eblue:#1CB9ED;  /* electric blue */
+  --ab-burg:#8A1C37;   /* burgundy */
+  --ab-white:#FFFFFF;  /* description text */
+  --ab-sep:rgba(174,231,239,0.26); /* thin cyan separators */
+}
+/* Headers & titles — blue tones */
+.about-hero h1 .white{color:var(--ab-blue)}
+.about-hero h1 .accent{color:var(--ab-eblue)}
+.h2{color:var(--ab-blue)}
+.bio-extended-content h3{color:var(--ab-eblue)}
+.award-card .aw-title{color:var(--ab-blue)}
+/* Small text, labels & metadata — blue & cyan */
+.marker .num{color:var(--ab-eblue)}
+.marker .lbl{color:var(--ab-cyan)}
+.stat .num{color:var(--ab-eblue)}
+.stat .lbl{color:var(--ab-cyan)}
+.award-card .aw-inst{color:var(--ab-eblue)}
+.statement .byline{color:var(--ab-cyan)}
+/* Biography & descriptive paragraphs — white */
+.about-hero p{color:var(--ab-white);opacity:.92}
+.bio-text p{color:var(--ab-white)}
+.bio-extended-content p,.bio-extended-content li{color:var(--ab-white)}
+.award-card .aw-desc{color:rgba(255,255,255,0.88)}
+.statement blockquote{color:var(--ab-white);font-style:italic}
+/* Secondary highlights & complementary details — burgundy & blue */
+.bio-extended-content strong{color:var(--ab-eblue)}
+.bio-extended-content em{color:var(--ab-burg);font-style:italic}
+.statement .dot.royal{background:var(--ab-blue)}
+.statement .dot.plum{background:var(--ab-burg)}
+.award-card::before{background:linear-gradient(180deg,var(--ab-blue),var(--ab-burg))}
+footer .foot .copy{color:var(--ab-burg)}
+footer .foot .location{color:var(--ab-eblue)}
+/* Thin borders & separators — light cyan */
+.stats{border-top-color:var(--ab-sep)}
+.bio-img-wrap{border-color:var(--ab-sep)}
+.statement{border-top-color:var(--ab-sep);border-bottom-color:var(--ab-sep)}
+.award-card{border-color:var(--ab-sep)}
+.award-card:hover{border-color:var(--ab-blue)}
+.bio-extended-content a{color:var(--ab-eblue);border-bottom-color:var(--ab-sep)}
+.bio-extended-content a:hover{color:var(--ab-blue)}
+/* Blue-tinted hero atmosphere for cohesion */
+.about-hero::before{background:radial-gradient(ellipse 55% 65% at 75% 20%,rgba(6,189,214,0.26) 0%,transparent 65%)}
+.about-hero .blob{background:radial-gradient(circle,rgba(28,185,237,0.5),transparent)}
 </style>
 </head>
 <body>

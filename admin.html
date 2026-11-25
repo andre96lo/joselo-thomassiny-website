@@ -252,6 +252,32 @@ img{display:block;max-width:100%}
 /* HTML editor */
 .html-editor{font-family:'JetBrains Mono',Consolas,monospace;font-size:12px;min-height:280px;line-height:1.65;tab-size:2;resize:vertical}
 
+/* Gallery selection */
+.btn-ghost{background:transparent;border:1px solid var(--admin-border);color:var(--admin-text)}
+.btn-ghost:hover{border-color:var(--admin-primary);color:var(--admin-primary)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.gal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--admin-border)}
+.gal-info{font-size:13px;color:var(--admin-muted);font-weight:500}
+.gal-bulk{display:flex;gap:8px;flex-wrap:wrap}
+.gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.gal-card{border:1px solid var(--admin-border);border-radius:10px;overflow:hidden;background:var(--admin-card);transition:border-color .15s}
+.gal-card:hover{border-color:var(--admin-primary)}
+.gal-thumb{aspect-ratio:1/1;background:#0c0e14;overflow:hidden}
+.gal-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-cap{font-size:11px;color:var(--admin-muted);padding:8px 10px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gal-toggles{display:flex;gap:6px;padding:8px 10px 10px}
+.gal-toggles .gt{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;font-weight:600;padding:6px 4px;border-radius:6px;cursor:pointer;border:1px solid var(--admin-border);color:var(--admin-muted);user-select:none;transition:all .15s}
+.gal-toggles .gt input{accent-color:var(--admin-primary);margin:0;cursor:pointer}
+.gal-toggles .gt:has(input:checked){background:var(--admin-primary-soft);border-color:var(--admin-primary);color:var(--admin-primary)}
+.gal-title{width:100%;padding:5px 8px;font-size:11px;border:1px solid var(--admin-border);border-radius:5px;background:var(--admin-bg);color:var(--admin-text);margin:0 0 2px;box-sizing:border-box}
+.gal-title:focus{border-color:var(--admin-primary);outline:none}
+.gal-title::placeholder{color:var(--admin-muted);opacity:.6}
+.wa-preview{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--admin-border);border-radius:10px;background:var(--admin-bg);margin-top:12px}
+.wa-preview svg{flex-shrink:0}
+.wa-preview .wa-text{font-size:14px;font-weight:500;color:var(--admin-text)}
+.wa-preview .wa-link{font-size:12px;color:var(--admin-primary);word-break:break-all;margin-top:2px}
+.wa-preview.empty{opacity:.4}
+
 /* Mobile */
 @media (max-width:900px){
   .layout{grid-template-columns:1fr}
@@ -435,6 +461,11 @@ img{display:block;max-width:100%}
       <span>Contenido Bio</span>
       <span class="check" id="biocontent-check" style="display:none">✓</span>
     </button>
+    <button class="nav-item" data-section="gallery">
+      <span class="ico">🖼️</span>
+      <span>Galería</span>
+      <span class="count" id="gallery-count">0</span>
+    </button>
     <button class="nav-item" data-section="contact">
       <span class="ico">📞</span>
       <span>Contacto</span>
@@ -569,6 +600,28 @@ img{display:block;max-width:100%}
       </div>
     </section>
 
+    <!-- GALLERY SELECTION -->
+    <section class="section" data-panel="gallery">
+      <div class="section-head">
+        <div>
+          <h2>Galería de Imágenes</h2>
+          <div class="sub">Elige qué imágenes aparecen en el <strong>collage</strong> y en el <strong>slideshow</strong> de la página Galería.</div>
+        </div>
+        <button class="btn btn-success" id="btn-save-gallery"><span>💾</span> Guardar Selección</button>
+      </div>
+      <div class="card">
+        <div class="gal-toolbar">
+          <span class="gal-info" id="gallery-info">—</span>
+          <div class="gal-bulk">
+            <button class="btn btn-ghost btn-sm" data-bulk="collage-all">Todo al collage</button>
+            <button class="btn btn-ghost btn-sm" data-bulk="collage-none">Vaciar collage</button>
+            <button class="btn btn-ghost btn-sm" data-bulk="slide-none">Vaciar slideshow</button>
+          </div>
+        </div>
+        <div class="gal-grid" id="gallery-grid"></div>
+      </div>
+    </section>
+
     <!-- CONTACT -->
     <section class="section" data-panel="contact">
       <div class="section-head">
@@ -594,6 +647,13 @@ img{display:block;max-width:100%}
             <label>WhatsApp</label>
             <input type="tel" id="c-whatsapp">
             <div class="hint">Formato: +52 998 XXX XXXX</div>
+            <div class="wa-preview empty" id="wa-preview">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.3 8.65A10.1 10.1 0 0 0 16.05 5.8c-5.58 0-10.12 4.54-10.12 10.12 0 1.78.47 3.52 1.35 5.06L5.8 26.2l5.4-1.42a10.07 10.07 0 0 0 4.84 1.23h0c5.58 0 10.12-4.54 10.12-10.12 0-2.7-1.05-5.24-2.86-7.14ZM16.05 24.1c-1.5 0-2.98-.4-4.27-1.17l-.3-.18-3.17.83.85-3.1-.2-.31a8.37 8.37 0 0 1-1.28-4.45c0-4.63 3.77-8.4 8.4-8.4a8.35 8.35 0 0 1 5.94 2.47 8.35 8.35 0 0 1 2.46 5.95c-.01 4.63-3.78 8.4-8.41 8.4Zm4.6-6.3c-.25-.13-1.49-.73-1.72-.82-.23-.08-.4-.13-.57.13-.17.25-.65.82-.8.98-.14.17-.3.19-.55.06-.25-.13-1.07-.39-2.04-1.26-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.12-.12.25-.3.38-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.57-1.37-.78-1.87-.2-.49-.41-.42-.57-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.57.13.17 1.75 2.67 4.24 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.49-.61 1.7-1.2.21-.59.21-1.09.15-1.2-.06-.1-.23-.17-.48-.3Z" fill="#fff"/></svg>
+              <div>
+                <div class="wa-text">Contáctame vía WhatsApp</div>
+                <div class="wa-link" id="wa-link-preview">—</div>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>Instagram (@usuario)</label>
@@ -770,6 +830,7 @@ img{display:block;max-width:100%}
 <!-- Toast -->
 <div class="toast" id="toast"><span id="toast-text"></span><button class="undo" id="toast-undo" style="display:none">Deshacer</button></div>
 
+<script src="gallery-images.js"></script>
 <script src="data.js"></script>
 <script>
 (async function(){
@@ -1347,7 +1408,23 @@ img{display:block;max-width:100%}
     $('#c-whatsapp').value = c.whatsapp || '';
     $('#c-instagram').value = c.instagram || '';
     $('#c-facebook').value = c.facebook || '';
+    updateWaPreview();
   }
+  function updateWaPreview(){
+    const raw = ($('#c-whatsapp').value || '').trim();
+    const digits = raw.replace(/[^0-9]/g, '');
+    const prev = $('#wa-preview');
+    const link = $('#wa-link-preview');
+    if(digits.length >= 10){
+      prev.classList.remove('empty');
+      const waUrl = 'https://wa.me/' + digits;
+      link.innerHTML = '<a href="'+waUrl+'" target="_blank" rel="noopener" style="color:var(--admin-primary)">'+waUrl+'</a>';
+    } else {
+      prev.classList.add('empty');
+      link.textContent = 'Ingresa un número para ver el enlace';
+    }
+  }
+  $('#c-whatsapp').addEventListener('input', updateWaPreview);
   $('#btn-save-contact').addEventListener('click', async ()=>{
     data.contact = {
       email: $('#c-email').value.trim(),
@@ -1801,6 +1878,77 @@ img{display:block;max-width:100%}
     if(btn && !colorEditorInitialized) setTimeout(initColorEditor, 50);
   });
 
+  // ========= GALLERY SELECTION =========
+  function galSets(){
+    const sel = data.gallery || { collage: [], slideshow: [] };
+    const cArr = (sel.collage   && sel.collage.length)   ? sel.collage   : (typeof GALLERY_DEFAULT_COLLAGE   !== 'undefined' ? GALLERY_DEFAULT_COLLAGE   : []);
+    const sArr = (sel.slideshow && sel.slideshow.length) ? sel.slideshow : (typeof GALLERY_DEFAULT_SLIDESHOW !== 'undefined' ? GALLERY_DEFAULT_SLIDESHOW : []);
+    return { c: new Set(cArr), s: new Set(sArr) };
+  }
+  function renderGallery(){
+    const grid = $('#gallery-grid');
+    if(!grid || typeof GALLERY_IMAGES === 'undefined') return;
+    const sets = galSets();
+    const titles = (data.gallery && data.gallery.titles) || {};
+    grid.innerHTML = GALLERY_IMAGES.map(im=>{
+      const customTitle = titles[im.f] || '';
+      return `<div class="gal-card" data-f="${im.f}">
+        <div class="gal-thumb"><img src="images/galeria/${im.f}" loading="lazy" alt=""></div>
+        <div style="padding:6px 10px 0">
+          <input type="text" class="gal-title" value="${(customTitle||im.t).replace(/"/g,'&quot;')}" placeholder="${im.t.replace(/"/g,'&quot;')}">
+        </div>
+        <div class="gal-toggles">
+          <label class="gt"><input type="checkbox" class="gal-collage" ${sets.c.has(im.f)?'checked':''}><span>Collage</span></label>
+          <label class="gt"><input type="checkbox" class="gal-slide" ${sets.s.has(im.f)?'checked':''}><span>Slide</span></label>
+        </div>
+      </div>`;
+    }).join('');
+    updateGalleryInfo();
+  }
+  function gatherGallery(){
+    const collage=[], slideshow=[], titles={};
+    $$('#gallery-grid .gal-card').forEach(card=>{
+      const f = card.dataset.f;
+      if(card.querySelector('.gal-collage').checked) collage.push(f);
+      if(card.querySelector('.gal-slide').checked) slideshow.push(f);
+      const inp = card.querySelector('.gal-title');
+      if(inp){
+        const v = inp.value.trim();
+        const def = GALLERY_IMAGES.find(x=>x.f===f);
+        if(v && (!def || v !== def.t)) titles[f] = v;
+      }
+    });
+    return { collage, slideshow, titles };
+  }
+  function updateGalleryInfo(){
+    const g = gatherGallery();
+    const info = $('#gallery-info');
+    if(info) info.textContent = `${g.collage.length} en collage · ${g.slideshow.length} en slideshow`;
+    const cnt = $('#gallery-count');
+    if(cnt) cnt.textContent = g.collage.length;
+  }
+  (function wireGallery(){
+    const grid = $('#gallery-grid');
+    if(grid) grid.addEventListener('change', updateGalleryInfo);
+    $$('.gal-bulk [data-bulk]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const mode = btn.dataset.bulk;
+        $$('#gallery-grid .gal-card').forEach(card=>{
+          if(mode==='collage-all')  card.querySelector('.gal-collage').checked = true;
+          if(mode==='collage-none') card.querySelector('.gal-collage').checked = false;
+          if(mode==='slide-none')   card.querySelector('.gal-slide').checked = false;
+        });
+        updateGalleryInfo();
+      });
+    });
+    const save = $('#btn-save-gallery');
+    if(save) save.addEventListener('click', async ()=>{
+      data.gallery = gatherGallery();
+      const ok = await saveAll();
+      if(ok){ renderGallery(); }
+    });
+  })();
+
   // ========= INIT =========
   renderArtworks();
   loadBio();
@@ -1808,6 +1956,7 @@ img{display:block;max-width:100%}
   renderExhibitions();
   renderAwards();
   loadBioContent();
+  renderGallery();
   updateSavedAt();
   updateCheckmarks();
 })();
