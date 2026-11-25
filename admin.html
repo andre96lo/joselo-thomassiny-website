@@ -272,6 +272,30 @@ img{display:block;max-width:100%}
 .gal-title{width:100%;padding:5px 8px;font-size:11px;border:1px solid var(--admin-border);border-radius:5px;background:var(--admin-bg);color:var(--admin-text);margin:0 0 2px;box-sizing:border-box}
 .gal-title:focus{border-color:var(--admin-primary);outline:none}
 .gal-title::placeholder{color:var(--admin-muted);opacity:.6}
+.gal-card.custom{border-color:rgba(118,253,221,0.35)}
+.gal-card .gal-del{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;opacity:0;transition:opacity .15s}
+.gal-card{position:relative}
+.gal-card:hover .gal-del{opacity:1}
+.gal-card .gal-del:hover{background:var(--admin-danger)}
+.gal-upload{display:flex;align-items:center;gap:10px}
+.gal-upload-overlay{position:fixed;top:20px;right:20px;background:var(--admin-card);border:1px solid var(--admin-primary);padding:12px 18px;border-radius:10px;display:none;align-items:center;gap:10px;z-index:600;box-shadow:var(--shadow-lg)}
+.gal-upload-overlay.active{display:flex}
+.order-section{margin-top:28px;padding-top:24px;border-top:1px solid var(--admin-border)}
+.order-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:12px}
+.order-head h3{font-size:15px;font-weight:600;color:var(--admin-text)}
+.order-head h3 .cnt{color:var(--admin-muted);font-weight:400;margin-left:8px;font-size:13px}
+.order-hint{font-size:12px;color:var(--admin-muted)}
+.order-list{display:flex;flex-wrap:wrap;gap:10px;min-height:88px;padding:12px;border:1px dashed var(--admin-border-strong);border-radius:10px;background:var(--admin-bg)}
+.order-list:empty::before{content:'Ninguna imagen seleccionada todavía.';color:var(--admin-muted);font-size:13px;display:flex;align-items:center;justify-content:center;width:100%;height:60px;font-style:italic}
+.order-tile{position:relative;width:78px;height:78px;border-radius:8px;overflow:hidden;cursor:grab;border:2px solid transparent;transition:transform .12s,border-color .12s;flex-shrink:0;user-select:none}
+.order-tile:active{cursor:grabbing}
+.order-tile.dragging{opacity:.4;transform:scale(.95)}
+.order-tile.drag-over{border-color:var(--admin-primary);transform:translateY(-3px)}
+.order-tile img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.order-tile .ord-num{position:absolute;top:3px;left:3px;background:rgba(0,0,0,.75);color:var(--admin-primary);font-size:11px;font-weight:700;padding:1px 6px;border-radius:999px;font-family:'JetBrains Mono',monospace}
+.order-tile .ord-rm{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .12s}
+.order-tile:hover .ord-rm{opacity:1}
+.order-tile .ord-rm:hover{background:var(--admin-danger)}
 .wa-preview{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--admin-border);border-radius:10px;background:var(--admin-bg);margin-top:12px}
 .wa-preview svg{flex-shrink:0}
 .wa-preview .wa-text{font-size:14px;font-weight:500;color:var(--admin-text)}
@@ -612,15 +636,37 @@ img{display:block;max-width:100%}
       <div class="card">
         <div class="gal-toolbar">
           <span class="gal-info" id="gallery-info">—</span>
-          <div class="gal-bulk">
+          <div class="gal-bulk gal-upload">
+            <button class="btn btn-primary btn-sm" id="btn-gal-upload"><span>📷</span> Subir imagen</button>
             <button class="btn btn-ghost btn-sm" data-bulk="collage-all">Todo al collage</button>
             <button class="btn btn-ghost btn-sm" data-bulk="collage-none">Vaciar collage</button>
             <button class="btn btn-ghost btn-sm" data-bulk="slide-none">Vaciar slideshow</button>
+            <input type="file" id="gal-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none">
           </div>
         </div>
         <div class="gal-grid" id="gallery-grid"></div>
+
+        <div class="order-section">
+          <div class="order-head">
+            <h3>Orden del collage <span class="cnt" id="order-collage-cnt">0 imágenes</span></h3>
+            <span class="order-hint">Arrastra para cambiar el orden. Clic en ✕ para quitar.</span>
+          </div>
+          <div class="order-list" id="order-collage" data-kind="collage"></div>
+        </div>
+
+        <div class="order-section">
+          <div class="order-head">
+            <h3>Orden del slideshow <span class="cnt" id="order-slide-cnt">0 imágenes</span></h3>
+            <span class="order-hint">Arrastra para cambiar el orden. Clic en ✕ para quitar.</span>
+          </div>
+          <div class="order-list" id="order-slide" data-kind="slide"></div>
+        </div>
       </div>
     </section>
+    <div class="gal-upload-overlay" id="gal-upload-overlay">
+      <div class="upload-spinner"></div>
+      <span id="gal-upload-text">Subiendo…</span>
+    </div>
 
     <!-- CONTACT -->
     <section class="section" data-panel="contact">
@@ -1879,73 +1925,241 @@ img{display:block;max-width:100%}
   });
 
   // ========= GALLERY SELECTION =========
-  function galSets(){
-    const sel = data.gallery || { collage: [], slideshow: [] };
-    const cArr = (sel.collage   && sel.collage.length)   ? sel.collage   : (typeof GALLERY_DEFAULT_COLLAGE   !== 'undefined' ? GALLERY_DEFAULT_COLLAGE   : []);
-    const sArr = (sel.slideshow && sel.slideshow.length) ? sel.slideshow : (typeof GALLERY_DEFAULT_SLIDESHOW !== 'undefined' ? GALLERY_DEFAULT_SLIDESHOW : []);
-    return { c: new Set(cArr), s: new Set(sArr) };
+  // In-memory ordered lists (preserve display order across renders)
+  let galCollageOrder = [];
+  let galSlideOrder = [];
+  let galTitles = {};
+
+  function galManifest(){
+    const base = (typeof GALLERY_IMAGES !== 'undefined') ? GALLERY_IMAGES.slice() : [];
+    const custom = (data.gallery && data.gallery.custom) || [];
+    return base.concat(custom);
+  }
+  function galDefaultTitle(f){
+    const all = galManifest();
+    const m = all.find(x=>x.f===f);
+    return m ? m.t : '';
+  }
+  function galTitleOf(f){
+    return galTitles[f] || galDefaultTitle(f) || 'Imagen';
+  }
+  function galSrcOf(f){
+    return /^https?:\/\//i.test(f) ? f : ('images/galeria/' + f);
+  }
+  function initGalleryState(){
+    const sel = data.gallery || {};
+    const defC = (typeof GALLERY_DEFAULT_COLLAGE   !== 'undefined') ? GALLERY_DEFAULT_COLLAGE.slice()   : [];
+    const defS = (typeof GALLERY_DEFAULT_SLIDESHOW !== 'undefined') ? GALLERY_DEFAULT_SLIDESHOW.slice() : [];
+    galCollageOrder = (sel.collage && sel.collage.length) ? sel.collage.slice() : defC;
+    galSlideOrder   = (sel.slideshow && sel.slideshow.length) ? sel.slideshow.slice() : defS;
+    galTitles = Object.assign({}, sel.titles || {});
   }
   function renderGallery(){
     const grid = $('#gallery-grid');
-    if(!grid || typeof GALLERY_IMAGES === 'undefined') return;
-    const sets = galSets();
-    const titles = (data.gallery && data.gallery.titles) || {};
-    grid.innerHTML = GALLERY_IMAGES.map(im=>{
-      const customTitle = titles[im.f] || '';
-      return `<div class="gal-card" data-f="${im.f}">
-        <div class="gal-thumb"><img src="images/galeria/${im.f}" loading="lazy" alt=""></div>
+    if(!grid) return;
+    const all = galManifest();
+    const cSet = new Set(galCollageOrder);
+    const sSet = new Set(galSlideOrder);
+    grid.innerHTML = all.map(im=>{
+      const title = galTitleOf(im.f);
+      const isCustom = /^https?:\/\//i.test(im.f);
+      return `<div class="gal-card${isCustom?' custom':''}" data-f="${im.f.replace(/"/g,'&quot;')}">
+        ${isCustom ? '<button class="gal-del" title="Eliminar imagen subida">✕</button>' : ''}
+        <div class="gal-thumb"><img src="${galSrcOf(im.f)}" loading="lazy" alt=""></div>
         <div style="padding:6px 10px 0">
-          <input type="text" class="gal-title" value="${(customTitle||im.t).replace(/"/g,'&quot;')}" placeholder="${im.t.replace(/"/g,'&quot;')}">
+          <input type="text" class="gal-title" value="${title.replace(/"/g,'&quot;')}" placeholder="${(im.t||'Imagen').replace(/"/g,'&quot;')}">
         </div>
         <div class="gal-toggles">
-          <label class="gt"><input type="checkbox" class="gal-collage" ${sets.c.has(im.f)?'checked':''}><span>Collage</span></label>
-          <label class="gt"><input type="checkbox" class="gal-slide" ${sets.s.has(im.f)?'checked':''}><span>Slide</span></label>
+          <label class="gt"><input type="checkbox" class="gal-collage" ${cSet.has(im.f)?'checked':''}><span>Collage</span></label>
+          <label class="gt"><input type="checkbox" class="gal-slide" ${sSet.has(im.f)?'checked':''}><span>Slide</span></label>
         </div>
       </div>`;
     }).join('');
+    renderOrderLists();
     updateGalleryInfo();
   }
-  function gatherGallery(){
-    const collage=[], slideshow=[], titles={};
-    $$('#gallery-grid .gal-card').forEach(card=>{
-      const f = card.dataset.f;
-      if(card.querySelector('.gal-collage').checked) collage.push(f);
-      if(card.querySelector('.gal-slide').checked) slideshow.push(f);
-      const inp = card.querySelector('.gal-title');
-      if(inp){
-        const v = inp.value.trim();
-        const def = GALLERY_IMAGES.find(x=>x.f===f);
-        if(v && (!def || v !== def.t)) titles[f] = v;
-      }
-    });
-    return { collage, slideshow, titles };
+  function renderOrderLists(){
+    const makeList = (listEl, order, kind) => {
+      if(!listEl) return;
+      listEl.innerHTML = order.map((f,i)=>`
+        <div class="order-tile" draggable="true" data-f="${f.replace(/"/g,'&quot;')}" title="${galTitleOf(f).replace(/"/g,'&quot;')}">
+          <img src="${galSrcOf(f)}" alt="">
+          <span class="ord-num">${i+1}</span>
+          <button class="ord-rm" data-kind="${kind}" title="Quitar">✕</button>
+        </div>`).join('');
+      attachDragSort(listEl, order, kind);
+    };
+    makeList($('#order-collage'), galCollageOrder, 'collage');
+    makeList($('#order-slide'),   galSlideOrder,   'slide');
+    const cnt1 = $('#order-collage-cnt'); if(cnt1) cnt1.textContent = galCollageOrder.length + ' imágenes';
+    const cnt2 = $('#order-slide-cnt');   if(cnt2) cnt2.textContent = galSlideOrder.length   + ' imágenes';
   }
-  function updateGalleryInfo(){
-    const g = gatherGallery();
-    const info = $('#gallery-info');
-    if(info) info.textContent = `${g.collage.length} en collage · ${g.slideshow.length} en slideshow`;
-    const cnt = $('#gallery-count');
-    if(cnt) cnt.textContent = g.collage.length;
-  }
-  (function wireGallery(){
-    const grid = $('#gallery-grid');
-    if(grid) grid.addEventListener('change', updateGalleryInfo);
-    $$('.gal-bulk [data-bulk]').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const mode = btn.dataset.bulk;
-        $$('#gallery-grid .gal-card').forEach(card=>{
-          if(mode==='collage-all')  card.querySelector('.gal-collage').checked = true;
-          if(mode==='collage-none') card.querySelector('.gal-collage').checked = false;
-          if(mode==='slide-none')   card.querySelector('.gal-slide').checked = false;
-        });
+  function attachDragSort(listEl, orderRef, kind){
+    let dragF = null;
+    listEl.querySelectorAll('.order-tile').forEach(tile=>{
+      tile.addEventListener('dragstart', e=>{
+        dragF = tile.dataset.f;
+        tile.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        try{ e.dataTransfer.setData('text/plain', dragF); }catch(_){}
+      });
+      tile.addEventListener('dragend', ()=>{
+        tile.classList.remove('dragging');
+        listEl.querySelectorAll('.order-tile').forEach(t=>t.classList.remove('drag-over'));
+      });
+      tile.addEventListener('dragover', e=>{ e.preventDefault(); tile.classList.add('drag-over'); });
+      tile.addEventListener('dragleave', ()=>tile.classList.remove('drag-over'));
+      tile.addEventListener('drop', e=>{
+        e.preventDefault();
+        const dropF = tile.dataset.f;
+        if(!dragF || dragF === dropF) return;
+        const target = (kind === 'collage') ? galCollageOrder : galSlideOrder;
+        const from = target.indexOf(dragF);
+        const to = target.indexOf(dropF);
+        if(from<0 || to<0) return;
+        target.splice(from,1);
+        target.splice(to,0,dragF);
+        renderOrderLists();
+      });
+      // Remove button
+      const rm = tile.querySelector('.ord-rm');
+      if(rm) rm.addEventListener('click', e=>{
+        e.stopPropagation();
+        const f = tile.dataset.f;
+        const target = (kind === 'collage') ? galCollageOrder : galSlideOrder;
+        const idx = target.indexOf(f);
+        if(idx>=0) target.splice(idx,1);
+        // Sync checkbox in grid
+        const card = document.querySelector('#gallery-grid .gal-card[data-f="'+f.replace(/"/g,'\\"')+'"]');
+        if(card){
+          const cb = card.querySelector(kind==='collage' ? '.gal-collage' : '.gal-slide');
+          if(cb) cb.checked = false;
+        }
+        renderOrderLists();
         updateGalleryInfo();
       });
     });
+  }
+  function updateGalleryInfo(){
+    const info = $('#gallery-info');
+    if(info) info.textContent = galCollageOrder.length + ' en collage · ' + galSlideOrder.length + ' en slideshow';
+    const cnt = $('#gallery-count');
+    if(cnt) cnt.textContent = galCollageOrder.length;
+  }
+  function onGridChange(e){
+    const target = e.target;
+    const card = target.closest('.gal-card');
+    if(!card) return;
+    const f = card.dataset.f;
+    if(target.classList.contains('gal-collage')){
+      const idx = galCollageOrder.indexOf(f);
+      if(target.checked && idx<0) galCollageOrder.push(f);
+      else if(!target.checked && idx>=0) galCollageOrder.splice(idx,1);
+      renderOrderLists();
+      updateGalleryInfo();
+    } else if(target.classList.contains('gal-slide')){
+      const idx = galSlideOrder.indexOf(f);
+      if(target.checked && idx<0) galSlideOrder.push(f);
+      else if(!target.checked && idx>=0) galSlideOrder.splice(idx,1);
+      renderOrderLists();
+      updateGalleryInfo();
+    } else if(target.classList.contains('gal-title')){
+      const v = target.value.trim();
+      const def = galDefaultTitle(f);
+      if(v && v !== def) galTitles[f] = v;
+      else delete galTitles[f];
+    }
+  }
+  function gatherGallery(){
+    return {
+      collage: galCollageOrder.slice(),
+      slideshow: galSlideOrder.slice(),
+      titles: Object.assign({}, galTitles),
+      custom: ((data.gallery && data.gallery.custom) || []).slice()
+    };
+  }
+
+  async function uploadGalleryFile(file){
+    const err = validateImageFile(file);
+    if(err){ toast(err, 'error'); return null; }
+    const url = await uploadImageToStorage(file, 'galeria');
+    if(!url){ toast('No se pudo subir ' + file.name, 'error'); return null; }
+    return url;
+  }
+
+  (function wireGallery(){
+    const grid = $('#gallery-grid');
+    if(grid) grid.addEventListener('change', onGridChange);
+    if(grid) grid.addEventListener('input', onGridChange);
+
+    // Delete uploaded custom image
+    if(grid) grid.addEventListener('click', e=>{
+      const del = e.target.closest('.gal-del');
+      if(!del) return;
+      const card = del.closest('.gal-card');
+      const f = card.dataset.f;
+      confirmAction('¿Eliminar imagen subida?', 'La imagen se quitará de la galería permanentemente.', true, ()=>{
+        if(!data.gallery) data.gallery = { collage:[], slideshow:[], titles:{}, custom:[] };
+        data.gallery.custom = (data.gallery.custom || []).filter(x => x.f !== f);
+        galCollageOrder = galCollageOrder.filter(x => x !== f);
+        galSlideOrder   = galSlideOrder.filter(x => x !== f);
+        delete galTitles[f];
+        renderGallery();
+        toast('Imagen eliminada. Guarda para persistir.', 'success');
+      });
+    });
+
+    // Bulk buttons
+    $$('.gal-bulk [data-bulk]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const mode = btn.dataset.bulk;
+        const allFiles = galManifest().map(m=>m.f);
+        if(mode==='collage-all'){
+          galCollageOrder = allFiles.slice();
+        } else if(mode==='collage-none'){
+          galCollageOrder = [];
+        } else if(mode==='slide-none'){
+          galSlideOrder = [];
+        }
+        renderGallery();
+      });
+    });
+
+    // Upload
+    const uploadBtn = $('#btn-gal-upload');
+    const fileInput = $('#gal-file-input');
+    const overlay   = $('#gal-upload-overlay');
+    const overlayText = $('#gal-upload-text');
+    if(uploadBtn && fileInput){
+      uploadBtn.addEventListener('click', ()=>fileInput.click());
+      fileInput.addEventListener('change', async e=>{
+        const files = Array.from(e.target.files || []);
+        fileInput.value = '';
+        if(!files.length) return;
+        overlay.classList.add('active');
+        if(!data.gallery) data.gallery = { collage:[], slideshow:[], titles:{}, custom:[] };
+        if(!data.gallery.custom) data.gallery.custom = [];
+        let uploaded = 0;
+        for(let i=0; i<files.length; i++){
+          overlayText.textContent = 'Subiendo ' + (i+1) + ' de ' + files.length + '…';
+          const url = await uploadGalleryFile(files[i]);
+          if(url){
+            const nameFromFile = files[i].name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+            data.gallery.custom.push({ f: url, t: nameFromFile || 'Imagen personalizada' });
+            uploaded++;
+          }
+        }
+        overlay.classList.remove('active');
+        renderGallery();
+        if(uploaded) toast('¡' + uploaded + ' imagen(es) subida(s)! Guarda para persistir.', 'success');
+      });
+    }
+
     const save = $('#btn-save-gallery');
     if(save) save.addEventListener('click', async ()=>{
       data.gallery = gatherGallery();
       const ok = await saveAll();
-      if(ok){ renderGallery(); }
+      if(ok){ initGalleryState(); renderGallery(); }
     });
   })();
 
@@ -1956,6 +2170,7 @@ img{display:block;max-width:100%}
   renderExhibitions();
   renderAwards();
   loadBioContent();
+  initGalleryState();
   renderGallery();
   updateSavedAt();
   updateCheckmarks();

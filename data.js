@@ -40,7 +40,7 @@ const DEFAULT_DATA = {
   },
   exhibitions: [],
   awards: [],
-  gallery: { collage: [], slideshow: [], titles: {} },
+  gallery: { collage: [], slideshow: [], titles: {}, custom: [] },
   lastSaved: null
 };
 
@@ -137,14 +137,15 @@ async function fetchSiteData() {
       : lsGet(LS_AWARDS, []);
 
     // Gallery selection — try Supabase gallery_config, fall back to localStorage
-    let gallery = { collage: [], slideshow: [], titles: {} };
+    let gallery = { collage: [], slideshow: [], titles: {}, custom: [] };
     try {
       const { data } = await supabase.from('gallery_config').select('*').eq('id', 1).maybeSingle();
       if (data) {
         gallery = {
           collage:   typeof data.collage   === 'string' ? JSON.parse(data.collage   || '[]') : (data.collage   || []),
           slideshow: typeof data.slideshow === 'string' ? JSON.parse(data.slideshow || '[]') : (data.slideshow || []),
-          titles:    typeof data.titles    === 'string' ? JSON.parse(data.titles    || '{}') : (data.titles    || {})
+          titles:    typeof data.titles    === 'string' ? JSON.parse(data.titles    || '{}') : (data.titles    || {}),
+          custom:    typeof data.custom    === 'string' ? JSON.parse(data.custom    || '[]') : (data.custom    || [])
         };
       } else {
         gallery = lsGet(LS_GALLERY, gallery);
@@ -290,7 +291,7 @@ async function saveSiteDataToSupabase(data) {
 
     // 6) Gallery selection — always persist to localStorage, also try Supabase
     {
-      const g = data.gallery || { collage: [], slideshow: [], titles: {} };
+      const g = data.gallery || { collage: [], slideshow: [], titles: {}, custom: [] };
       lsSet(LS_GALLERY, g);
       try {
         await supabase.from('gallery_config').upsert({
@@ -298,6 +299,7 @@ async function saveSiteDataToSupabase(data) {
           collage:   JSON.stringify(g.collage || []),
           slideshow: JSON.stringify(g.slideshow || []),
           titles:    JSON.stringify(g.titles || {}),
+          custom:    JSON.stringify(g.custom || []),
           updated_at: now
         });
       } catch(e) { console.warn('Gallery Supabase sync skipped (table may not exist):', e); }

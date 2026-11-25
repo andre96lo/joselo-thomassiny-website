@@ -146,6 +146,19 @@ footer .foot .location{color:var(--t-plum)}
 .andrelo-link{font-size:11px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
 .andrelo-link:hover{color:var(--royal-blue)}
 
+/* Contact icons section */
+.contact-icons{padding:100px 0;background:var(--bg);text-align:center}
+.contact-icons h2{margin-bottom:48px}
+.contact-links{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.contact-link{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 36px;border:1px solid var(--ab-sep);border-radius:12px;background:rgba(255,255,255,0.02);transition:all .3s;min-width:180px}
+.contact-link:hover{border-color:var(--ab-blue);background:rgba(6,189,214,0.06);transform:translateY(-3px)}
+.contact-link svg{transition:transform .3s}
+.contact-link:hover svg{transform:scale(1.1)}
+.contact-link .cl-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ab-cyan)}
+.contact-link .cl-value{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:500;color:var(--ab-white)}
+.contact-link.wa:hover{border-color:#25D366}
+.contact-link.ig:hover{border-color:#E1306C}
+
 /* Awards section */
 .awards{padding:100px 0;background:var(--near-black)}
 .awards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-top:48px}
@@ -330,6 +343,15 @@ footer .foot .location{color:var(--ab-eblue)}
     </div>
   </section>
 
+  <!-- Contact icons -->
+  <section class="contact-icons" id="contacto">
+    <div class="container">
+      <div class="marker reveal" style="justify-content:center"><span class="num">[03]</span><span class="lbl">Contacto</span></div>
+      <h2 class="h2 reveal">Contáctame</h2>
+      <div class="contact-links reveal" id="contact-links"></div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -399,11 +421,44 @@ footer .foot .location{color:var(--ab-eblue)}
     // Footer contact
     const c = d.contact;
     const ul = document.getElementById('foot-contact');
+    const waSvg = '<svg width="18" height="18" viewBox="0 0 32 32" fill="none" style="vertical-align:middle;margin-right:6px"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.3 8.65A10.1 10.1 0 0 0 16.05 5.8c-5.58 0-10.12 4.54-10.12 10.12 0 1.78.47 3.52 1.35 5.06L5.8 26.2l5.4-1.42a10.07 10.07 0 0 0 4.84 1.23h0c5.58 0 10.12-4.54 10.12-10.12 0-2.7-1.05-5.24-2.86-7.14ZM16.05 24.1c-1.5 0-2.98-.4-4.27-1.17l-.3-.18-3.17.83.85-3.1-.2-.31a8.37 8.37 0 0 1-1.28-4.45c0-4.63 3.77-8.4 8.4-8.4a8.35 8.35 0 0 1 5.94 2.47 8.35 8.35 0 0 1 2.46 5.95c-.01 4.63-3.78 8.4-8.41 8.4Zm4.6-6.3c-.25-.13-1.49-.73-1.72-.82-.23-.08-.4-.13-.57.13-.17.25-.65.82-.8.98-.14.17-.3.19-.55.06-.25-.13-1.07-.39-2.04-1.26-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.12-.12.25-.3.38-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.57-1.37-.78-1.87-.2-.49-.41-.42-.57-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.57.13.17 1.75 2.67 4.24 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.49-.61 1.7-1.2.21-.59.21-1.09.15-1.2-.06-.1-.23-.17-.48-.3Z" fill="#fff"/></svg>';
+    const waDigits = (c.whatsapp||'').replace(/[^0-9]/g,'');
     ul.innerHTML = [
       c.email ? `<li><a href="mailto:${c.email}">${c.email}</a></li>` : '',
-      (c.whatsapp||c.phone) ? `<li><a href="tel:${(c.whatsapp||c.phone).replace(/\s/g,'')}">${c.whatsapp||c.phone}</a></li>` : '',
+      waDigits.length >= 10 ? `<li><a href="https://wa.me/${waDigits}" target="_blank" rel="noopener" style="color:#25D366;display:inline-flex;align-items:center">${waSvg}${c.whatsapp}</a></li>` : '',
       c.instagram ? `<li><a href="https://instagram.com/${c.instagram.replace(/^@/,'')}" target="_blank" rel="noopener">${c.instagram}</a></li>` : ''
     ].join('');
+
+    // Contact icons section
+    const contactLinks = document.getElementById('contact-links');
+    if(contactLinks){
+      let html = '';
+      if(waDigits.length >= 10){
+        html += `<a class="contact-link wa" href="https://wa.me/${waDigits}" target="_blank" rel="noopener">
+          <svg width="48" height="48" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M23.3 8.65A10.1 10.1 0 0 0 16.05 5.8c-5.58 0-10.12 4.54-10.12 10.12 0 1.78.47 3.52 1.35 5.06L5.8 26.2l5.4-1.42a10.07 10.07 0 0 0 4.84 1.23h0c5.58 0 10.12-4.54 10.12-10.12 0-2.7-1.05-5.24-2.86-7.14ZM16.05 24.1c-1.5 0-2.98-.4-4.27-1.17l-.3-.18-3.17.83.85-3.1-.2-.31a8.37 8.37 0 0 1-1.28-4.45c0-4.63 3.77-8.4 8.4-8.4a8.35 8.35 0 0 1 5.94 2.47 8.35 8.35 0 0 1 2.46 5.95c-.01 4.63-3.78 8.4-8.41 8.4Zm4.6-6.3c-.25-.13-1.49-.73-1.72-.82-.23-.08-.4-.13-.57.13-.17.25-.65.82-.8.98-.14.17-.3.19-.55.06-.25-.13-1.07-.39-2.04-1.26-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.12-.12.25-.3.38-.44.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.57-1.37-.78-1.87-.2-.49-.41-.42-.57-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.57.13.17 1.75 2.67 4.24 3.74.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.49-.61 1.7-1.2.21-.59.21-1.09.15-1.2-.06-.1-.23-.17-.48-.3Z" fill="#fff"/></svg>
+          <span class="cl-label">WhatsApp</span>
+          <span class="cl-value">${c.whatsapp}</span>
+        </a>`;
+      }
+      if(c.instagram){
+        const igHandle = c.instagram.replace(/^@/,'');
+        html += `<a class="contact-link ig" href="https://instagram.com/${igHandle}" target="_blank" rel="noopener">
+          <svg width="48" height="48" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="url(#ig)"/><defs><radialGradient id="ig" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="8" y="8" width="16" height="16" rx="4.5" stroke="#fff" stroke-width="1.6" fill="none"/><circle cx="16" cy="16" r="4" stroke="#fff" stroke-width="1.6" fill="none"/><circle cx="21.2" cy="10.8" r="1.2" fill="#fff"/></svg>
+          <span class="cl-label">Instagram</span>
+          <span class="cl-value">@${igHandle}</span>
+        </a>`;
+      }
+      if(c.email){
+        html += `<a class="contact-link" href="mailto:${c.email}">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="var(--ab-blue)" opacity="0.15"/><path d="M14 17l10 7 10-7" stroke="var(--ab-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="12" y="15" width="24" height="18" rx="3" stroke="var(--ab-blue)" stroke-width="1.8" fill="none"/></svg>
+          <span class="cl-label">Email</span>
+          <span class="cl-value">${c.email}</span>
+        </a>`;
+      }
+      contactLinks.innerHTML = html;
+      const section = document.getElementById('contacto');
+      if(section) section.style.display = html ? '' : 'none';
+    }
 
     // Awards
     const awardsSection = document.getElementById('premios');
