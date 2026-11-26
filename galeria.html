@@ -70,52 +70,55 @@ body.menu-open #mobile-menu a:nth-child(4){transition-delay:.29s}
 .sec-head h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:clamp(38px,6vw,80px);line-height:.92;text-transform:uppercase;letter-spacing:-0.01em;color:var(--t-offwhite)}
 .sec-head h2 em{font-style:italic;color:var(--t-iceblue)}
 
-/* ===== Section 1: Collage (masonry, true aspect ratios) ===== */
-.collage-sec{padding:120px 0;background:var(--bg);position:relative}
+/* ===== Section 1: Collage (3-row tight scroll) ===== */
+.collage-sec{padding:120px 0 80px;background:var(--bg);position:relative;overflow:hidden}
 .collage-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad-cool);opacity:.5}
-.collage{column-count:4;column-gap:24px}
-@media(max-width:1180px){.collage{column-count:3}}
-@media(max-width:760px){.collage{column-count:2;column-gap:14px}}
-@media(max-width:430px){.collage{column-count:2;column-gap:10px}}
-.collage-item{cursor:zoom-in}
-.collage-item{break-inside:avoid;margin-bottom:24px;opacity:0;transform:translateY(46px) scale(.965);transition:opacity 1s cubic-bezier(.16,.72,.28,1),transform 1s cubic-bezier(.16,.72,.28,1);will-change:transform,opacity}
-.collage-item.in{opacity:1;transform:none}
-.ci-inner{will-change:transform}
-.ci-media{position:relative;overflow:hidden;border-radius:4px;border:1px solid var(--border);background:var(--charcoal);box-shadow:0 12px 40px rgba(0,0,0,0.45);animation:floaty var(--fl,8s) ease-in-out infinite;animation-delay:var(--fd,0s)}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.ci-media img{width:100%;height:auto;display:block;filter:saturate(.9) brightness(.9) contrast(1.02);transition:transform 1.1s cubic-bezier(.16,.72,.28,1),filter .7s ease}
-.ci-media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,8,0) 45%,rgba(5,6,8,0.78));opacity:.55;transition:opacity .5s ease;pointer-events:none}
-.ci-media::before{content:'';position:absolute;inset:0;z-index:2;border:1px solid rgba(0,224,249,0);transition:border-color .5s ease;pointer-events:none;border-radius:4px}
-.collage-item:hover .ci-media img{transform:scale(1.07);filter:saturate(1.08) brightness(1.02) contrast(1.02)}
+.collage-wrap{display:flex;flex-direction:column;gap:3px}
+.collage-row{display:flex;gap:3px;width:max-content;animation:marqueeL var(--row-dur,200s) linear infinite}
+.collage-wrap:hover .collage-row{animation-play-state:paused}
+@keyframes marqueeL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.collage-item{flex-shrink:0;cursor:zoom-in;position:relative;height:clamp(270px,33vh,420px)}
+.collage-item.sz-s{width:clamp(300px,27vw,420px)}
+.collage-item.sz-m{width:clamp(390px,36vw,555px)}
+.collage-item.sz-l{width:clamp(480px,45vw,660px)}
+.ci-media{position:relative;overflow:hidden;height:100%;background:var(--charcoal);border:1px solid rgba(255,255,255,0.06);transition:border-color .5s ease}
+.ci-media img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92) brightness(.88) contrast(1.02);transition:transform 1.6s cubic-bezier(.16,.72,.28,1),filter 1s ease}
+.ci-media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,8,0) 50%,rgba(5,6,8,0.65));opacity:.5;transition:opacity .7s ease;pointer-events:none}
+.collage-item:hover .ci-media img{transform:scale(1.05);filter:saturate(1.05) brightness(.95) contrast(1.02)}
 .collage-item:hover .ci-media::after{opacity:.2}
-.collage-item:hover .ci-media::before{border-color:rgba(0,224,249,0.5)}
-.collage-item:hover .ci-media{box-shadow:0 22px 60px rgba(0,0,0,0.6),0 0 40px rgba(0,224,249,0.14)}
-.ci-media figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:20px 18px 16px;transform:translateY(12px);opacity:0;transition:transform .5s ease,opacity .5s ease}
+.collage-item:hover .ci-media{border-color:rgba(0,224,249,0.4)}
+.ci-media figcaption{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 14px 12px;transform:translateY(10px);opacity:0;transition:transform .7s ease,opacity .7s ease}
 .collage-item:hover .ci-media figcaption{transform:translateY(0);opacity:1}
-.ci-media figcaption .ci-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:500;color:var(--t-offwhite);letter-spacing:0.01em;line-height:1.1}
-.ci-media figcaption .ci-n{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--cyan-blue);margin-bottom:6px}
+.ci-media figcaption .ci-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;font-weight:500;color:var(--t-offwhite);letter-spacing:0.01em;line-height:1.1}
+.ci-media figcaption .ci-n{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--cyan-blue);margin-bottom:4px}
+@media(max-width:760px){
+  .collage-item{height:clamp(180px,27vh,270px)}
+  .collage-item.sz-s{width:clamp(210px,45vw,300px)}
+  .collage-item.sz-m{width:clamp(270px,57vw,390px)}
+  .collage-item.sz-l{width:clamp(330px,69vw,480px)}
+}
 
 /* ===== Section 2: Cinematic slideshow ===== */
 .slideshow-sec{padding:120px 0 140px;background:var(--pure-black);position:relative}
-.slideshow{position:relative;height:74vh;min-height:440px;max-height:820px;overflow:hidden;border-radius:6px;border:1px solid var(--border-strong);box-shadow:var(--shadow-lg)}
+.slideshow{position:relative;height:66vh;min-height:396px;max-height:738px;overflow:hidden;border-radius:6px;border:1px solid var(--border-strong);box-shadow:var(--shadow-lg)}
 .slideshow{background:var(--pure-black)}
-.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1.4s ease,visibility 0s linear 1.4s}
-.slide.active{opacity:1;visibility:visible;transition:opacity 1.4s ease}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 2.1s ease,visibility 0s linear 2.1s}
+.slide.active{opacity:1;visibility:visible;transition:opacity 2.1s ease}
 /* Blurred darkened backdrop fills empty space around the contained image */
 .slide .sl-bg{position:absolute;inset:0;overflow:hidden}
 .slide .sl-bg img{width:100%;height:100%;object-fit:cover;filter:blur(34px) brightness(.38) saturate(1.15);transform:scale(1.2)}
-.slide.active .sl-bg img{animation:kb 9s ease-out forwards}
-.slide.active.kb-alt .sl-bg img{animation:kb-alt 9s ease-out forwards}
+.slide.active .sl-bg img{animation:kb 13.5s ease-out forwards}
+.slide.active.kb-alt .sl-bg img{animation:kb-alt 13.5s ease-out forwards}
 @keyframes kb{0%{transform:scale(1.18) translate(0,0)}100%{transform:scale(1.3) translate(-2%,-1.5%)}}
 @keyframes kb-alt{0%{transform:scale(1.3) translate(2%,1.5%)}100%{transform:scale(1.18) translate(0,0)}}
 /* Foreground: complete image, no crop, centered */
 .slide .sl-fg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.slide .sl-fg img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 20px 70px rgba(0,0,0,0.6);transform:scale(.985);opacity:.001;transition:transform 1.2s cubic-bezier(.16,.72,.28,1),opacity 1.2s ease}
+.slide .sl-fg img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;box-shadow:0 20px 70px rgba(0,0,0,0.6);transform:scale(.985);opacity:.001;transition:transform 1.8s cubic-bezier(.16,.72,.28,1),opacity 1.8s ease}
 .slide.active .sl-fg img{transform:scale(1);opacity:1}
 .slide .sl-grad{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(5,6,8,0.55) 0%,rgba(5,6,8,0.12) 40%,transparent 68%),linear-gradient(180deg,transparent 58%,rgba(5,6,8,0.72))}
 .slide .sl-cap{position:absolute;left:0;bottom:0;padding:clamp(28px,5vw,64px);z-index:3;max-width:70%}
 .slide .sl-cap .sl-idx{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--cyan-blue);display:block;margin-bottom:12px}
-.slide .sl-cap .sl-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:clamp(28px,4.5vw,58px);line-height:.98;text-transform:uppercase;color:var(--t-offwhite);transform:translateY(20px);opacity:0;transition:transform 1s ease .3s,opacity 1s ease .3s}
+.slide .sl-cap .sl-t{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:clamp(28px,4.5vw,58px);line-height:.98;text-transform:uppercase;color:var(--t-offwhite);transform:translateY(20px);opacity:0;transition:transform 1.5s ease .45s,opacity 1.5s ease .45s}
 .slide.active .sl-cap .sl-t{transform:translateY(0);opacity:1}
 /* Controls */
 .sl-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:6;width:58px;height:58px;border-radius:50%;background:rgba(5,6,8,0.4);border:1px solid rgba(255,255,255,0.18);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;color:var(--t-offwhite);font-size:20px;transition:background .3s,border-color .3s,transform .3s}
@@ -124,9 +127,10 @@ body.menu-open #mobile-menu a:nth-child(4){transition-delay:.29s}
 .sl-arrow.next{right:24px}
 .sl-arrow.prev:hover{transform:translateY(-50%) translateX(-3px)}
 .sl-arrow.next:hover{transform:translateY(-50%) translateX(3px)}
-.sl-dots{position:absolute;left:0;right:0;bottom:22px;z-index:6;display:flex;gap:10px;justify-content:center}
-.sl-dots button{width:34px;height:3px;border-radius:3px;background:rgba(255,255,255,0.25);transition:background .3s}
-.sl-dots button.active{background:var(--cyan-blue)}
+.sl-dots{position:absolute;left:0;right:0;bottom:22px;z-index:6;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 20px}
+.sl-dots button{width:18px;height:3px;border-radius:3px;background:rgba(255,255,255,0.25);transition:background .3s}
+.sl-dots button.active{background:var(--cyan-blue);width:28px}
+.sl-counter{position:absolute;right:24px;bottom:24px;z-index:6;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:1px;color:var(--cyan-blue)}
 .sl-progress{position:absolute;top:0;left:0;height:2px;background:var(--grad-cool);z-index:6;width:0}
 
 /* ===== Lightbox ===== */
@@ -217,8 +221,8 @@ footer .foot .location{color:var(--t-plum)}
         <div class="marker"><span class="num">[01]</span><span class="lbl">Colección</span></div>
         <h2>Collage <em>Visual</em></h2>
       </div>
-      <div class="collage" id="collage"></div>
     </div>
+    <div class="collage-wrap" id="collage"></div>
   </section>
 
   <!-- ===== Section 2: Cinematic Slideshow ===== -->
@@ -234,6 +238,7 @@ footer .foot .location{color:var(--t-plum)}
         <button class="sl-arrow prev" id="sl-prev" aria-label="Anterior">‹</button>
         <button class="sl-arrow next" id="sl-next" aria-label="Siguiente">›</button>
         <div class="sl-dots" id="sl-dots"></div>
+        <div class="sl-counter" id="sl-counter"></div>
       </div>
     </div>
   </section>
@@ -322,68 +327,45 @@ footer .foot .location{color:var(--t-plum)}
   var collageList = defCollage();
   var slideList = defSlides();
 
-  /* ---- Collage (masonry, true aspect ratios) ---- */
+  /* ---- Collage (multi-row exhibition scroll) ---- */
   var collage = document.getElementById('collage');
   var collageItems = [];
-  var io = null;
+  var SIZES = ['sz-s','sz-m','sz-l'];
+  function pseudoRand(seed){ return function(){ seed = (seed * 16807 + 0) % 2147483647; return (seed - 1) / 2147483646; }; }
   function buildCollage(list){
     collage.innerHTML = '';
-    var frag = document.createDocumentFragment();
-    list.forEach(function(f, i){
-      var cap = capOf[f] || '';
-      var fig = document.createElement('figure');
-      fig.className = 'collage-item';
-      fig.setAttribute('data-speed', (0.02 + (i % 4) * 0.018).toFixed(3));
-      fig.setAttribute('data-i', i);
-      var fl = (7 + (i % 5)) + 's';
-      var fd = (-(i % 7) * 0.9).toFixed(1) + 's';
-      var n = ('0' + (i+1)).slice(-2);
-      fig.innerHTML =
-        '<div class="ci-inner"><div class="ci-media" style="--fl:'+fl+';--fd:'+fd+'">' +
-          '<img src="'+srcOf(f)+'" alt="'+cap+'" loading="lazy" decoding="async">' +
-          '<figcaption><span class="ci-n">'+n+'</span><span class="ci-t">'+cap+'</span></figcaption>' +
-        '</div></div>';
-      fig.addEventListener('click', function(){ openLightbox(parseInt(fig.getAttribute('data-i'),10)); });
-      frag.appendChild(fig);
-    });
-    collage.appendChild(frag);
-    collageItems = Array.prototype.slice.call(collage.children);
-    if(io) io.disconnect();
-    if('IntersectionObserver' in window){
-      var seen = 0;
-      io = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if(e.isIntersecting){
-            e.target.style.transitionDelay = Math.min((seen % 4) * 90, 300) + 'ms';
-            e.target.classList.add('in'); seen++;
-            io.unobserve(e.target);
-          }
+    var NUM_ROWS = 3;
+    var rows = []; for(var r=0;r<NUM_ROWS;r++) rows.push([]);
+    list.forEach(function(f, i){ rows[i % NUM_ROWS].push({f:f, i:i}); });
+    var rng = pseudoRand(42);
+    var speedBase = Math.max(list.length * 5, 120);
+    rows.forEach(function(rowItems, ri){
+      var rowEl = document.createElement('div');
+      rowEl.className = 'collage-row';
+      var rowSpeed = speedBase * (0.9 + ri * 0.1);
+      rowEl.style.setProperty('--row-dur', rowSpeed.toFixed(0) + 's');
+      function appendSet(){
+        rowItems.forEach(function(item){
+          var cap = capOf[item.f] || '';
+          var fig = document.createElement('figure');
+          var sz = SIZES[Math.floor(rng() * 3)];
+          fig.className = 'collage-item ' + sz;
+          fig.setAttribute('data-i', item.i);
+          var n = ('0' + (item.i+1)).slice(-2);
+          fig.innerHTML =
+            '<div class="ci-media">' +
+              '<img src="'+srcOf(item.f)+'" alt="'+cap+'" loading="lazy" decoding="async">' +
+              '<figcaption><span class="ci-n">'+n+'</span><span class="ci-t">'+cap+'</span></figcaption>' +
+            '</div>';
+          fig.addEventListener('click', function(){ openLightbox(parseInt(fig.getAttribute('data-i'),10)); });
+          rowEl.appendChild(fig);
         });
-      }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
-      collageItems.forEach(function(el){ io.observe(el); });
-    } else {
-      collageItems.forEach(function(el){ el.classList.add('in'); });
-    }
-  }
-
-  /* Parallax drift on the inner wrapper (reads collageItems live) */
-  if(!reduced){
-    var ticking = false;
-    var parallax = function(){
-      var vh = window.innerHeight;
-      collageItems.forEach(function(el){
-        var r = el.getBoundingClientRect();
-        if(r.bottom < -200 || r.top > vh + 200) return;
-        var speed = parseFloat(el.getAttribute('data-speed')) || 0;
-        var off = ((r.top + r.height/2) - vh/2) * -speed;
-        var inner = el.firstElementChild;
-        if(inner) inner.style.transform = 'translate3d(0,'+off.toFixed(1)+'px,0)';
-      });
-      ticking = false;
-    };
-    window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(parallax); } }, {passive:true});
-    window.addEventListener('resize', parallax);
-    window.__galParallax = parallax;
+      }
+      appendSet();
+      appendSet();
+      collage.appendChild(rowEl);
+    });
+    collageItems = Array.prototype.slice.call(collage.querySelectorAll('.collage-item'));
   }
 
   /* ---- Cinematic slideshow ---- */
@@ -391,10 +373,16 @@ footer .foot .location{color:var(--t-plum)}
   var dotsEl = document.getElementById('sl-dots');
   var progressEl = document.getElementById('sl-progress');
   var slides = [], dots = [], cur = 0, timer = null, startedAt = 0, rafId = null;
-  var DURATION = 5800;
+  var DURATION = 8700;
+  var counterEl = document.getElementById('sl-counter');
+  var totalSlides = 0;
   function buildSlideshow(list){
     clearTimeout(timer); cancelAnimationFrame(rafId);
     slidesEl.innerHTML = ''; dotsEl.innerHTML = ''; cur = 0;
+    totalSlides = list.length;
+    var useDots = list.length <= 20;
+    dotsEl.style.display = useDots ? '' : 'none';
+    counterEl.style.display = useDots ? 'none' : '';
     list.forEach(function(f, i){
       var cap = capOf[f] || '';
       var ld = (i === 0 ? 'eager' : 'lazy');
@@ -407,10 +395,12 @@ footer .foot .location{color:var(--t-plum)}
         '<div class="sl-cap"><span class="sl-idx">'+('0'+(i+1)).slice(-2)+' / '+('0'+list.length).slice(-2)+'</span>' +
         '<span class="sl-t">'+cap+'</span></div>';
       slidesEl.appendChild(s);
-      var b = document.createElement('button');
-      b.setAttribute('aria-label','Imagen '+(i+1));
-      (function(idx){ b.addEventListener('click', function(){ go(idx); }); })(i);
-      dotsEl.appendChild(b);
+      if(useDots){
+        var b = document.createElement('button');
+        b.setAttribute('aria-label','Imagen '+(i+1));
+        (function(idx){ b.addEventListener('click', function(){ go(idx); }); })(i);
+        dotsEl.appendChild(b);
+      }
     });
     slides = Array.prototype.slice.call(slidesEl.children);
     dots = Array.prototype.slice.call(dotsEl.children);
@@ -419,6 +409,7 @@ footer .foot .location{color:var(--t-plum)}
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle('active', i===cur); });
     dots.forEach(function(d,i){ d.classList.toggle('active', i===cur); });
+    if(totalSlides > 20) counterEl.textContent = ('0'+(cur+1)).slice(-2) + ' / ' + ('0'+totalSlides).slice(-2);
   }
   function tickProgress(now){
     var p = Math.min((now - startedAt) / DURATION, 1);
@@ -491,7 +482,6 @@ footer .foot .location{color:var(--t-plum)}
     slideList   = sanitize(listOk(sel.slideshow) ? sel.slideshow : defSlides(),  defSlides());
     buildCollage(collageList);
     buildSlideshow(slideList);
-    if(window.__galParallax) window.__galParallax();
   }
 
   applyGallery(null);
