@@ -73,16 +73,16 @@ body.menu-open #mobile-menu a:nth-child(4){transition-delay:.29s}
 /* ===== Section 1: Collage (3-row tight scroll) ===== */
 .collage-sec{padding:120px 0 80px;background:var(--bg);position:relative;overflow:hidden}
 .collage-sec::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad-cool);opacity:.5}
-.collage-wrap{display:flex;flex-direction:column;gap:3px}
-.collage-row{display:flex;gap:3px;width:max-content;animation:marqueeL var(--row-dur,200s) linear infinite}
+.collage-wrap{display:flex;flex-direction:column;gap:2px}
+.collage-row{display:flex;gap:2px;width:max-content;animation:marqueeL var(--row-dur,200s) linear infinite}
 .collage-wrap:hover .collage-row{animation-play-state:paused}
 @keyframes marqueeL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.collage-item{flex-shrink:0;cursor:zoom-in;position:relative;height:clamp(270px,33vh,420px)}
+.collage-item{flex-shrink:0;cursor:zoom-in;position:relative;height:clamp(280px,35vh,420px)}
 .collage-item.sz-s{width:clamp(300px,27vw,420px)}
 .collage-item.sz-m{width:clamp(390px,36vw,555px)}
 .collage-item.sz-l{width:clamp(480px,45vw,660px)}
 .ci-media{position:relative;overflow:hidden;height:100%;background:var(--charcoal);border:1px solid rgba(255,255,255,0.06);transition:border-color .5s ease}
-.ci-media img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92) brightness(.88) contrast(1.02);transition:transform 1.6s cubic-bezier(.16,.72,.28,1),filter 1s ease}
+.ci-media img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;filter:saturate(.92) brightness(.88) contrast(1.02);transition:transform 1.6s cubic-bezier(.16,.72,.28,1),filter 1s ease}
 .ci-media::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,8,0) 50%,rgba(5,6,8,0.65));opacity:.5;transition:opacity .7s ease;pointer-events:none}
 .collage-item:hover .ci-media img{transform:scale(1.05);filter:saturate(1.05) brightness(.95) contrast(1.02)}
 .collage-item:hover .ci-media::after{opacity:.2}
@@ -92,7 +92,7 @@ body.menu-open #mobile-menu a:nth-child(4){transition-delay:.29s}
 .ci-media figcaption .ci-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;font-weight:500;color:var(--t-offwhite);letter-spacing:0.01em;line-height:1.1}
 .ci-media figcaption .ci-n{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--cyan-blue);margin-bottom:4px}
 @media(max-width:760px){
-  .collage-item{height:clamp(180px,27vh,270px)}
+  .collage-item{height:clamp(200px,28vh,300px)}
   .collage-item.sz-s{width:clamp(210px,45vw,300px)}
   .collage-item.sz-m{width:clamp(270px,57vw,390px)}
   .collage-item.sz-l{width:clamp(330px,69vw,480px)}
