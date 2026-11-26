@@ -472,14 +472,15 @@ footer .foot .location{color:var(--t-plum)}
   /* ---- Apply selection (defaults now; upgrade from saved config) ---- */
   function applyGallery(sel){
     sel = sel || {};
-    // Merge uploaded custom images first so they are recognized by hasCap/sanitize
     if(sel.custom && sel.custom.length){
       sel.custom.forEach(function(c){ if(c && c.f) capOf[c.f] = c.t || 'Imagen'; });
     }
     var t = sel.titles || {};
     for(var k in t){ if(t.hasOwnProperty(k)) capOf[k] = t[k]; }
-    collageList = sanitize(listOk(sel.collage)   ? sel.collage   : defCollage(), defCollage());
-    slideList   = sanitize(listOk(sel.slideshow) ? sel.slideshow : defSlides(),  defSlides());
+    // Always use ALL manifest images for both collage and slideshow
+    var allImages = MANIFEST.map(function(m){ return m.f; });
+    collageList = allImages;
+    slideList   = allImages;
     buildCollage(collageList);
     buildSlideshow(slideList);
   }
