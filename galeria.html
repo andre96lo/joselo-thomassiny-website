@@ -354,8 +354,7 @@ footer .foot .location{color:var(--t-plum)}
           var n = ('0' + (item.i+1)).slice(-2);
           fig.innerHTML =
             '<div class="ci-media">' +
-              '<img src="'+srcOf(item.f)+'" alt="'+cap+'" loading="lazy" decoding="async">' +
-              '<figcaption><span class="ci-n">'+n+'</span><span class="ci-t">'+cap+'</span></figcaption>' +
+              '<img src="'+srcOf(item.f)+'" alt="" loading="lazy" decoding="async">' +
             '</div>';
           fig.addEventListener('click', function(){ openLightbox(parseInt(fig.getAttribute('data-i'),10)); });
           rowEl.appendChild(fig);
@@ -392,8 +391,7 @@ footer .foot .location{color:var(--t-plum)}
         '<div class="sl-bg"><img src="'+srcOf(f)+'" alt="" loading="'+ld+'" decoding="async"></div>' +
         '<div class="sl-fg"><img src="'+srcOf(f)+'" alt="'+cap+'" loading="'+ld+'" decoding="async"></div>' +
         '<div class="sl-grad"></div>' +
-        '<div class="sl-cap"><span class="sl-idx">'+('0'+(i+1)).slice(-2)+' / '+('0'+list.length).slice(-2)+'</span>' +
-        '<span class="sl-t">'+cap+'</span></div>';
+        '<div class="sl-cap"><span class="sl-idx">'+('0'+(i+1)).slice(-2)+' / '+('0'+list.length).slice(-2)+'</span></div>';
       slidesEl.appendChild(s);
       if(useDots){
         var b = document.createElement('button');
@@ -446,7 +444,7 @@ footer .foot .location{color:var(--t-plum)}
     var f = collageList[lbIndex];
     lbImg.src = srcOf(f);
     lbImg.alt = capOf[f] || '';
-    lbT.textContent = capOf[f] || '';
+    lbT.textContent = '';
     lbN.textContent = ('0'+(lbIndex+1)).slice(-2) + ' / ' + ('0'+collageList.length).slice(-2);
   }
   function openLightbox(i){ showLb(i); lb.classList.add('open'); lb.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden'; }
